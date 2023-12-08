@@ -1,0 +1,8 @@
+podman build -t um-co-agg .
+podman image ls
+podman tag localhost/um-co-agg:latest bastion.ocp.unimicron.com:8443/u00176/labimages/um-co-agg:v1.0
+
+./kafka-console-consumer.sh \
+--bootstrap-server amqs-kafka-bootstrap:9092 \
+--topic um-ibdi-comm-report \
+--from-beginning
