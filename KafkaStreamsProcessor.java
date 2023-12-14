@@ -70,13 +70,13 @@ public class KafkaStreamsProcessor {
         // topics.add("um-ibdi-comm-ncn");
         // topics.add("um-ibdi-comm-spc");
         // KStream<String, String> cogroupedStream = builder.stream(topics);
-        KStream<String, String> spcStream = builder.stream("um-ibdi-comm-spc");
+        KStream<String, String> spcStream = builder.stream("um-ibdi-comm-spc-result");
         KGroupedStream<String, String> spcGroupedStream = spcStream.groupByKey();
         
-        KStream<String, String> ncnStream = builder.stream("um-ibdi-comm-ncn");
+        KStream<String, String> ncnStream = builder.stream("um-ibdi-comm-ncn-result");
         KGroupedStream<String, String> ncnGroupedStream = ncnStream.groupByKey();
 
-        KStream<String, String> cpvStream = builder.stream("um-ibdi-comm-cpv");
+        KStream<String, String> cpvStream = builder.stream("um-ibdi-comm-cpv-result");
         KGroupedStream<String, String> cpvGroupedStream = cpvStream.groupByKey();
 
         CogroupedKStream<String, String> cogroupedStream = spcGroupedStream.cogroup(commAggregator)
@@ -90,7 +90,7 @@ public class KafkaStreamsProcessor {
                     public String apply(String aggValue, String statusValue) {
                         JSONObject aggJsonObj = new JSONObject(aggValue.toString());
                         JSONObject statusJsonObj = new JSONObject(statusValue.toString());
-
+			log.info("Count check ===> " + aggJsonObj.get("checkCount") + ", statusCount ===> " + statusJsonObj.get("count"));
                         if (aggJsonObj.get("checkCount").equals(statusJsonObj.get("count"))) {
                             aggJsonObj.put("mesResult", statusJsonObj.get("result"));
                             aggJsonObj.put("event", "completed");
