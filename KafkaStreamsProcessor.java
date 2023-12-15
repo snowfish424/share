@@ -49,8 +49,8 @@ public class KafkaStreamsProcessor {
 					break;
 			}
 			
-			aggJsonObj.put("checkCount", count);
-
+			aggJsonObj.put("checkCount", String.valueOf(count));
+            
 			return aggJsonObj.toString();
 		}
 	};
@@ -58,6 +58,7 @@ public class KafkaStreamsProcessor {
 	@Autowired
 	public void process(StreamsBuilder builder) {
 		KStream<String, String> statusStream = builder.stream("um-ibdi-comm-status");
+        //statusStream.peek((key, value) -> log.info("statusStream record - key " + key + ", value " + value));
         KTable<String, String> statusTable = statusStream.groupByKey()
             .aggregate(
                 () -> "" , 
@@ -71,6 +72,7 @@ public class KafkaStreamsProcessor {
         // topics.add("um-ibdi-comm-spc");
         // KStream<String, String> cogroupedStream = builder.stream(topics);
         KStream<String, String> spcStream = builder.stream("um-ibdi-comm-spc-result");
+        //spcStream.peek((key, value) -> log.info("spcStream record - key " + key + ", value " + value));
         KGroupedStream<String, String> spcGroupedStream = spcStream.groupByKey();
         
         KStream<String, String> ncnStream = builder.stream("um-ibdi-comm-ncn-result");
@@ -90,11 +92,16 @@ public class KafkaStreamsProcessor {
                     public String apply(String aggValue, String statusValue) {
                         JSONObject aggJsonObj = new JSONObject(aggValue.toString());
                         JSONObject statusJsonObj = new JSONObject(statusValue.toString());
-			log.info("Count check ===> " + aggJsonObj.get("checkCount") + ", statusCount ===> " + statusJsonObj.get("count"));
-                        if (aggJsonObj.get("checkCount").equals(statusJsonObj.get("count"))) {
+                        int checkCount = Integer.valueOf(aggJsonObj.getString("checkCount"));
+                        int count = Integer.valueOf(statusJsonObj.getString("count"));
+                        log.info("Count check ===> " + checkCount + ", statusCount ===> " + count);
+                        
+                        //if (aggJsonObj.getString("checkCount").equals(statusJsonObj.getString("count"))) {
+                        if (checkCount == count) {
+                            //log.info("aggJsonObj ===> " + aggJsonObj.toString());
                             aggJsonObj.put("mesResult", statusJsonObj.get("result"));
                             aggJsonObj.put("event", "completed");
-
+                            
                             return aggJsonObj.toString();
                         }
 
@@ -103,7 +110,7 @@ public class KafkaStreamsProcessor {
                 });
 
         coTable.toStream()
-			//.peek((key, value) -> log.info("join record - key " + key))
+			//.peek((key, value) -> log.info("join record - key " + key + ", value " + value))
             .groupByKey().aggregate(
                 () -> "", 
                 (aggKey, newValue, aggValue) -> newValue)
