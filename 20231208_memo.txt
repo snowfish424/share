@@ -8,3 +8,6 @@ podman push !:3
 --bootstrap-server amqs-kafka-bootstrap:9092 \
 --topic um-ibdi-comm-report \
 --from-beginning
+
+oc project amq-streams
+oc scale --replicas 3 deployment/um-co-agg
