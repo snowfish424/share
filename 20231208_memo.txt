@@ -11,3 +11,5 @@ podman push !:3
 
 oc project amq-streams
 oc scale --replicas 3 deployment/um-co-agg
+
+https://redhat-developer-demos.github.io/kafka-tutorial
