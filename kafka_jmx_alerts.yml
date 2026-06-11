@@ -1,0 +1,87 @@
+groups:
+  - name: KafkaKRaftJmxAlerts
+    rules:
+
+      # ==========================================
+      # 1. 節點存活告警 (Instance Lifecycle)
+      # ==========================================
+      - alert: KafkaInstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka 服務實例已離線 (Instance {{ $labels.instance }})"
+          description: "Prometheus 無法抓取該節點的 JMX 指標，進程可能崩潰或網路中斷。"
+
+      # ==========================================
+      # 2. Broker 數據面告警 (Broker Data Plane)
+      # ==========================================
+      - alert: KafkaOfflinePartitions
+        expr: kafka_server_replicamanager_offlinepartitionscount > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "出現離線分割區！(Offline Partitions Count > 0)"
+          description: "節點 {{ $labels.instance }} 偵測到有 {{ $value }} 個分割區離線，客戶端目前無法讀寫這些分割區！"
+
+      - alert: KafkaUnderReplicatedPartitions
+        expr: kafka_server_replicamanager_underreplicatedpartitions > 0
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "分割區副本未完全同步 (Under Replicated Partitions)"
+          description: "節點 {{ $labels.instance }} 有 {{ $value }} 個分割區副本落後。通常代表有其他 Broker 離線或網路同步延遲。"
+
+      # ==========================================
+      # 3. KRaft 控制面核心告警 (KRaft Control Plane)
+      # ==========================================
+      - alert: KRaftActiveControllerCountError
+        expr: kafka_controller_kafkacontroller_activecontrollercount != 1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRaft 活躍控制器數量異常！"
+          description: "節點 {{ $labels.instance }} 回報當前 Active Controller 數量為 {{ $value }}（預期應為 1）。可能發生無 Leader 或腦裂。"
+
+      - alert: KRaftNoLeader
+        expr: kafka_meta_raftmetrics_currentleader == -1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRaft Quorum 失去 Leader"
+          description: "節點 {{ $labels.instance }} 回報當前元數據 Raft 叢集沒有 Leader，元數據功能已癱瘓，無法處理任何配置變更！"
+
+      - alert: KRaftMetadataLogLagHigh
+        expr: kafka_server_brokermetadatalistener_metadataloglag > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Broker 元數據同步嚴重落後"
+          description: "Broker ({{ $labels.instance }}) 的元數據落後 Controller 高達 {{ $value }} 個 Offset。這就是造成 'still catching up' 刷屏的元兇指標！"
+
+      # ==========================================
+      # 4. JVM 效能告警 (JVM Default Metrics)
+      # ==========================================
+      - alert: KafkaJVMHeapUsageHigh
+        expr: jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"} * 100 > 85
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kafka JVM Heap 使用率過高 (Instance {{ $labels.instance }})"
+          description: "JVM Heap 使用率已達 {{ $value | printf \"%.2f\" }}%，請注意是否發生記憶體洩漏或需調整 -Xmx 參數。"
+
+      - alert: KafkaJVMGarbageCollectionTimeHigh
+        expr: rate(jvm_gc_collection_seconds_sum[5m]) > 0.3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JVM GC 暫停時間過長 (Instance {{ $labels.instance }})"
+          description: "過去 5 分鐘內，GC 暫停時間每秒超過 0.3 秒。這會引發 Broker 反應變慢，甚至導致 KRaft 心跳超時閃退。"
