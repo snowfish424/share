@@ -1,0 +1,4838 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Visualize PMI metrics data for your WebSphere Application Server",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10000,
+      "panels": [],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "id": 20,
+      "title": "Process CPU Usage",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Displays the \"recent CPU usage\" for the Java Virtual Machine processes.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "process_cpu_utilization{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:5491",
+                "decimals": 0,
+                "format": "percentunit",
+                "label": "",
+                "logBase": 1,
+                "min": "0",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:5492",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "id": 21,
+      "title": "System CPU Usage",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average CPU utilization since the last query. The System CPU load metric value is only available from the nodeagent server from each node.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "system_cpu_utilization{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\"}",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:5410",
+                "format": "percentunit",
+                "label": "",
+                "logBase": 1,
+                "max": "1.0",
+                "min": "0",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:5411",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 12,
+        "h": 9
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 10001,
+      "panels": [],
+      "title": "Memory Heap",
+      "type": "row"
+    },
+    {
+      "id": 53,
+      "title": "Heap Usage (Percentage)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Shows the Heap Usage in graph format.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"} / jvm_memory_max_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"} ",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "sort": "current",
+              "sortDesc": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:3035",
+                "decimals": 0,
+                "format": "percentunit",
+                "logBase": 1,
+                "max": "1",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:3036",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 11,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 164,
+      "title": "Heap Usage (Percentage)",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Shows the Heap Usage in graph format in table format.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"} / jvm_memory_max_bytes{instance=~\"$instance\", node=~\"$node\", server=~\"$server\"} ",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "node"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 195
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area",
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "area": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 11,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 149,
+      "title": "Heap Usage (Bytes)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The current Heap used by the jvms",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "format": "time_series",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:18921",
+                "format": "bytes",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:18922",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 168,
+      "title": "Heap Usage (Bytes)",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Shows the Heap Usage in table format.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area",
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "area": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 19,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 165,
+      "title": "Increasing Heap Usage Trend Based on Last ${dur}",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Instances with an increase in heap usage within the last ${dur}.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "deriv(jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}${dur}) > 0",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "binBps"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area",
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "area": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 166,
+      "title": "Servers That May Reach Max Heap Usage Within [$maxHeapUsageProjection hour(s)] Based on Last $dur",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Instances projected to reach the max heap size within [$maxHeapUsageProjection hour(s)] based on  data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "predict_linear(jvm_memory_used_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur, $maxHeapUsageProjection * 3600) >  jvm_memory_max_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area",
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "area": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 159,
+      "title": "Maximum Heap Size",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "An instance's maximum heap size. This value is based on the Xmx value set on admin console for the JVM.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "jvm_memory_max_bytes{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area",
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "area": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 24,
+        "h": 8
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 10002,
+      "panels": [],
+      "title": "Servlets",
+      "type": "row"
+    },
+    {
+      "id": 170,
+      "title": "Slowest Servlets Over Last $dur by Average Response Time",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average response time for requests made to a particular servlet based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "avg(rate(was_servlet_response_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur) / rate(was_servlet_requests_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)) by (servlet, instance, cell, appname) > 0",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average Response Time"
+              },
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Average Response Time"
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "appname",
+                "instance",
+                "servlet",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 4,
+              "appname": 2,
+              "cell": 1,
+              "instance": 0,
+              "servlet": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 24,
+        "h": 7
+      }
+    },
+    {
+      "id": 55,
+      "title": "Servlet Request Count Over Last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of visits made to a servlet instance within the past $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "sum(increase(was_servlet_requests_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)) by (servlet, instance, cell, node, server, appname)",
+          "legendFormat": "servlet: {{servlet}}, cell: {{cell}}, node: {{node}}, server {{server}}, appname: {{appname}}, instance: {{instance}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:350149",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:350150",
+                "format": "short",
+                "logBase": 1,
+                "show": false
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 51,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 132,
+      "title": "Average Response Time per Servlet Request Over Last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average response time for a request made to a servlet based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "rate(was_servlet_response_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur) / rate(was_servlet_requests_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur) ",
+          "legendFormat": "servlet: {{servlet}}, cell: {{cell}}, node: {{node}}, server {{server}}, appname: {{appname}}, instance: {{instance}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": false,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:350296",
+                "format": "s",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:350297",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 51,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 18,
+      "title": "Request Count by Servlet Over Last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The sum of visits to a particular servlet over all servers across nodes and instances (i.e. cells) based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "sum(increase(was_servlet_requests_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)) by (servlet, appname)",
+          "legendFormat": "servlet: {{servlet}}, appname: {{appname}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "sort": "current",
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:350230",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:350231",
+                "format": "short",
+                "logBase": 1,
+                "show": false
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 17,
+      "title": "Average Response Time per Request Over Last $dur By Servlet",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average response time for requests made to a particular servlet, across all servers nodes and instances (i.e. cells) based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "avg(rate(was_servlet_response_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur) / rate(was_servlet_requests_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)) by (servlet, appname)",
+          "legendFormat": "servlet: {{servlet}}, appname: {{appname}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "decimals": 2,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": false,
+              "max": true,
+              "min": true,
+              "show": true,
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:350783",
+                "format": "s",
+                "logBase": 1,
+                "min": "0",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:350784",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 59,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 67
+      },
+      "id": 10003,
+      "panels": [],
+      "title": "EJBs",
+      "type": "row"
+    },
+    {
+      "id": 155,
+      "title": "Average Response Time per EJB Over Last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average response time for an EJB based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "avg(rate(was_ejb_response_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur) / rate(was_ejb_responses_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)) by (ejb, cell, instance)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, ejb: {{ejb}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": false,
+              "max": true,
+              "min": true,
+              "show": true,
+              "sort": "avg",
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:1643",
+                "format": "s",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:1644",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 45,
+        "w": 24,
+        "h": 10
+      }
+    },
+    {
+      "id": 154,
+      "title": "Slowest EJBs Over Last $dur by Average Response Time",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Table that lists the slowest EJBs over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "avg(rate(was_ejb_response_time_seconds_total{instance=~\"$instance\", \r\ncell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur) / rate(was_ejb_responses_total{instance=~\"$instance\", \r\ncell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)) by (instance, cell, ejb) > 0",
+          "legendFormat": "",
+          "editorMode": "code",
+          "intervalFactor": 1,
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "custom": {
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average Response Time"
+              },
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Average Response Time"
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "ejb",
+                "instance",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 3,
+              "cell": 1,
+              "ejb": 2,
+              "instance": 0
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 55,
+        "w": 24,
+        "h": 8
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "id": 10004,
+      "panels": [],
+      "title": "Connection Pools",
+      "type": "row"
+    },
+    {
+      "id": 172,
+      "title": "Connections Used Over Last $dur",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total number of connection requests that were used over the last $dur. Any connections that are currently in use are not included in this total.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_connectionpool_inUse_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}$dur) > 0",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "jndiname",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "cell": 1,
+              "instance": 0,
+              "jndiname": 4,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 174,
+      "title": "Connection Requests Queued Over Last $dur",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total number of connection requests that waited for a connection because of a full connection pool over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_connectionpool_wait_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}$dur) > 0",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "jndiname",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "cell": 1,
+              "instance": 0,
+              "jndiname": 4,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 69,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 95,
+      "title": "Average Time Usage per Connection",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average time any used connection was put in use, based on data over the last ${dur}.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "rate(was_connectionpool_inUse_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval]) / rate(was_connectionpool_inUse_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval]) > 0",
+          "legendFormat": "{{jndiname}} @ {{server}}",
+          "editorMode": "code",
+          "format": "time_series",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:1326",
+                "decimals": 2,
+                "format": "s",
+                "label": "",
+                "logBase": 1,
+                "min": "0",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:1327",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 77,
+        "w": 12,
+        "h": 7
+      },
+      "maxDataPoints": 300,
+      "interval": "30s"
+    },
+    {
+      "id": 101,
+      "title": "Average Wait Time per Queued Connection Request",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average wait time for any queued connection request, based on data over the last ${dur}.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "rate(was_connectionpool_wait_time_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval]) / rate(was_connectionpool_wait_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval]) > 0",
+          "legendFormat": "{{jndiname}} @ {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:1406",
+                "format": "s",
+                "logBase": 1,
+                "min": "0",
+                "show": true
+              },
+              {
+                "$$hashKey": "object:1407",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 77,
+        "w": 12,
+        "h": 7
+      },
+      "maxDataPoints": 300,
+      "interval": "30s"
+    },
+    {
+      "id": 30,
+      "title": "Managed Connections",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The sum of managed connections in the free, shared, and unshared pools.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "was_connectionpool_managed_connections{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}",
+          "legendFormat": "{{jndiname}} @ {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "never",
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2005",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2006",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 84,
+        "w": 24,
+        "h": 8
+      },
+      "maxDataPoints": 300,
+      "interval": "30s"
+    },
+    {
+      "id": 27,
+      "title": "Free & In-Use Connections",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of free connections in the pool.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "expr": "was_connectionpool_free_connections{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}",
+          "legendFormat": "free {{jndiname}} @ {{server}}"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "B",
+          "editorMode": "code",
+          "range": true,
+          "expr": "was_connectionpool_connectionHandles{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}",
+          "legendFormat": "in use {{jndiname}} @ {{server}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "never",
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:43877",
+                "decimals": 0,
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:43878",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 92,
+        "w": 24,
+        "h": 8
+      },
+      "maxDataPoints": 300,
+      "interval": "30s"
+    },
+    {
+      "id": 31,
+      "title": "Connection Create & Close Rate",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total number of managed connections created in the past $dur",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "expr": "rate(was_connectionpool_create_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval])",
+          "legendFormat": "create {{jndiname}} @ {{server}}"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "B",
+          "editorMode": "code",
+          "range": true,
+          "expr": "rate(was_connectionpool_close_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", jndiname=~\"$jndiname\"}[$__rate_interval])",
+          "legendFormat": "close {{jndiname}} @ {{server}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:9289",
+                "decimals": 0,
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:9290",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 100,
+        "w": 24,
+        "h": 8
+      },
+      "maxDataPoints": 300,
+      "interval": "30s"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 108
+      },
+      "id": 10005,
+      "panels": [],
+      "title": "SIB",
+      "type": "row"
+    },
+    {
+      "id": 142,
+      "title": "Message Data (in bytes) Written in the past $dur from the Messaging Engines ",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total amount of message data (in bytes) written in the past $dur from the messaging engines.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_sib_communication_me_messageWrite_bytes_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2505",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2506",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 86,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 144,
+      "title": "Message Data (in bytes) Read in the past $dur from the Message Engines ",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total amount of message data (in bytes) read in the past $dur from the messaging engines.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_sib_communication_me_messageRead_bytes_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2557",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2558",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 86,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 145,
+      "title": "Message Data (in bytes) Written in the past $dur from the Clients",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total amount of message data (in bytes) written in the past $dur from the Clients",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_sib_communication_client_messageWrite_bytes_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:6271",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:6272",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 94,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 143,
+      "title": "Message Data (in bytes) Read in the past $dur from the Clients",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The total amount of message data (in bytes) read in the past $dur from the Clients",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_sib_communication_client_messageRead_bytes_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2659",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2660",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 94,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 146,
+      "title": "Messages Produced by Queue in the last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Messages Produced by Queue in the last $dur",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "sum(increase(was_sib_queue_messageProduced_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)) by (instance, cell, queue)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, queue: {{queue}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2711",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2712",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 102,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 147,
+      "title": "Messages Consumed by Queue in the last $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Messages Consumed by Queue in the last $dur",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "sum(increase(was_sib_queue_messageConsumed_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)) by (instance, cell, queue)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, queue: {{queue}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2763",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2764",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 102,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 110
+      },
+      "id": 10006,
+      "panels": [],
+      "title": "Sessions",
+      "type": "row"
+    },
+    {
+      "id": 32,
+      "title": "Active Sessions",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "A session is considered active if the application server is processing a request that uses that user session.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "was_session_active_sessions{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}",
+          "legendFormat": "instance: {{instance}}, appname: {{appname}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": false,
+              "show": true,
+              "sort": "current",
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:6999",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:7000",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 88,
+        "w": 24,
+        "h": 10
+      }
+    },
+    {
+      "id": 33,
+      "title": "Live  Sessions",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "A session is considered live if the session is loaded into memory by the application server.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "was_session_live_sessions{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}",
+          "legendFormat": "instance: {{instance}}, appname: {{appname}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "hideZero": false,
+              "max": true,
+              "min": true,
+              "rightSide": false,
+              "show": true,
+              "sort": "current",
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:2881",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:2882",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 98,
+        "w": 24,
+        "h": 10
+      }
+    },
+    {
+      "id": 122,
+      "title": "Invalidated Sessions in the past $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of sessions that were invalidated.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_session_invalidated_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)",
+          "legendFormat": "instance: {{instance}}, appname: {{appname}},  cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "hideEmpty": false,
+              "hideZero": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:10489",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:10490",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 108,
+        "w": 12,
+        "h": 12
+      }
+    },
+    {
+      "id": 124,
+      "title": "Created Sessions in the past $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Created sessions in the last $dur",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_session_create_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\", appname=~\"$appname\"}$dur)",
+          "legendFormat": "instance: {{instance}}, appname: {{appname}},  cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:10572",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:10573",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 108,
+        "w": 12,
+        "h": 12
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 120
+      },
+      "id": 10007,
+      "panels": [],
+      "title": "Thread Pools",
+      "type": "row"
+    },
+    {
+      "id": 176,
+      "title": "Largest Thread Pool Sizes Over Last $dur",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The size of the thread pools in each server, based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "max_over_time(was_threadpool_size{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Threads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pool"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 391
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Threads"
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "node",
+                "pool",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 5,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "pool": 4,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 98,
+        "w": 24,
+        "h": 8
+      }
+    },
+    {
+      "id": 37,
+      "title": "Active Threads",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of threads that are actively running tasks.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "was_threadpool_active_threads{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "instance: {{instance}}, pool: {{pool}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:8620",
+                "decimals": 1,
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:8621",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 106,
+        "w": 24,
+        "h": 7
+      }
+    },
+    {
+      "id": 38,
+      "title": "Thread Pool Size",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The size of the thread pool in each server.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "B",
+          "expr": "was_threadpool_size{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "instance: {{instance}}, pool: {{pool}},cell: {{cell}},  node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "format": "time_series",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "sort": "current",
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:3319",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:3320",
+                "format": "short",
+                "logBase": 1,
+                "show": false
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 113,
+        "w": 24,
+        "h": 7
+      }
+    },
+    {
+      "id": 126,
+      "title": "Declared Hung Threads in the past $dur",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of threads declared hung in the last $dur",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "increase(was_threadpool_declaredThreadHungs_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, pool: {{pool}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:3387",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:3388",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 120,
+        "w": 12,
+        "h": 11
+      }
+    },
+    {
+      "id": 128,
+      "title": "Concurrent Hung Threads",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The number of concurrent hung threads",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "was_threadpool_concurrentHung_threads{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "instance: {{instance}}, pool: {{pool}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:3439",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:3440",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 12,
+        "y": 120,
+        "w": 12,
+        "h": 11
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 131
+      },
+      "id": 10008,
+      "panels": [],
+      "title": "Garbage Collection",
+      "type": "row"
+    },
+    {
+      "id": 180,
+      "title": "Time Spent Garbage Collecting During Last $dur",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "A table reporting the portion of time a specific server has spent Garbage Collecting in the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "rate(jvm_gc_duration_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Portion of Time"
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 109,
+        "w": 24,
+        "h": 8
+      }
+    },
+    {
+      "id": 107,
+      "title": "Time per Garbage Collection Cycle $dur moving average",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The average time a server took on garbage collection, based on data over the last $dur.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "rate(jvm_gc_duration_seconds_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur) / rate(jvm_gc_total{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}$dur)",
+          "legendFormat": "instance: {{instance}}, cell: {{cell}}, node: {{node}}, server: {{server}}",
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "__angularMigration": {
+          "autoMigrateFrom": "graph",
+          "originalOptions": {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "decimals": 2,
+            "fill": 0,
+            "fillGradient": 0,
+            "hiddenSeries": false,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": false,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [],
+            "timeRegions": [],
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "xaxis": {
+              "mode": "time",
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "$$hashKey": "object:3559",
+                "format": "s",
+                "logBase": 1,
+                "show": true
+              },
+              {
+                "$$hashKey": "object:3560",
+                "format": "short",
+                "logBase": 1,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false
+            }
+          }
+        },
+        "alertThreshold": true
+      },
+      "transformations": [],
+      "gridPos": {
+        "x": 0,
+        "y": 117,
+        "w": 24,
+        "h": 9
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 132
+      },
+      "id": 10009,
+      "panels": [],
+      "title": "Other JVM Information",
+      "type": "row"
+    },
+    {
+      "id": 178,
+      "title": "JVM Uptime",
+      "type": "table",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "The time elapsed since the start of the JVM.",
+      "links": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "refId": "A",
+          "expr": "process_uptime_seconds{instance=~\"$instance\", cell=~\"$cell\", node=~\"$node\", server=~\"$server\"}",
+          "legendFormat": "",
+          "editorMode": "code",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "filterable": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "displayName",
+                "value": "Uptime"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "node",
+                "server",
+                "Value",
+                "cell"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value": 4,
+              "cell": 1,
+              "instance": 0,
+              "node": 2,
+              "server": 3
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 110,
+        "w": 24,
+        "h": 8
+      }
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "label": "instance",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "process_cpu_utilization",
+        "query": {
+          "query": "process_cpu_utilization",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/process_cpu_utilization{.*instance=\"([^\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "cell",
+        "label": "cell",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "process_cpu_utilization",
+        "query": {
+          "query": "process_cpu_utilization",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/process_cpu_utilization{.*cell=\\\"([^\\\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "node",
+        "label": "node",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "process_cpu_utilization",
+        "query": {
+          "query": "process_cpu_utilization",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/process_cpu_utilization{.*node=\\\"([^\\\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "server",
+        "label": "server",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "process_cpu_utilization",
+        "query": {
+          "query": "process_cpu_utilization",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/process_cpu_utilization{.*server=\\\"([^\\\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "appname",
+        "label": "appname",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "was_servlet_requests_total",
+        "query": {
+          "query": "was_servlet_requests_total",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/was_servlet_requests_total{.*appname=\\\"([^\\\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "jndiname",
+        "label": "jndiname",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "was_connectionpool_free_connections",
+        "query": {
+          "query": "was_connectionpool_free_connections",
+          "refId": "StandardVariableQuery"
+        },
+        "regex": "/was_connectionpool_free_connections{.*jndiname=\\\"([^\\\"]*).*/",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "sort": 1,
+        "options": []
+      },
+      {
+        "name": "dur",
+        "label": "Duration Range",
+        "hide": 0,
+        "skipUrlSync": false,
+        "current": {
+          "text": "[10m]",
+          "value": "[10m]"
+        },
+        "type": "custom",
+        "query": "[1m],[5m],[10m],[30m],[1h],[1d],[7d]",
+        "includeAll": false,
+        "multi": false,
+        "options": [
+          {
+            "selected": false,
+            "text": "[1m]",
+            "value": "[1m]"
+          },
+          {
+            "selected": true,
+            "text": "[5m]",
+            "value": "[5m]"
+          },
+          {
+            "selected": false,
+            "text": "[10m]",
+            "value": "[10m]"
+          },
+          {
+            "selected": false,
+            "text": "[30m]",
+            "value": "[30m]"
+          },
+          {
+            "selected": false,
+            "text": "[1h]",
+            "value": "[1h]"
+          },
+          {
+            "selected": false,
+            "text": "[1d]",
+            "value": "[1d]"
+          },
+          {
+            "selected": false,
+            "text": "[7d]",
+            "value": "[7d]"
+          }
+        ]
+      },
+      {
+        "name": "maxHeapUsageProjection",
+        "label": "Max Heap Usage Projection (hours)",
+        "hide": 2,
+        "skipUrlSync": false,
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
+        "type": "constant",
+        "query": "1"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "WebSphere Application Server PMI Metrics Dashboard",
+  "uid": "ibm-was-pmi-metrics",
+  "version": 1
+}
