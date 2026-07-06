@@ -29,8 +29,10 @@ curl -sS -o "$OUT" -w "http_code=%{http_code} size=%{size_download} time=%{time_
 
 cat was-metrics-summary.txt
 
-# 只回報「有幾種 jndiname」，不用貼名稱
-grep '^was_connectionpool_' ... | sed -n 's/.*jndiname="\([^"]*\)".*/\1/p' | sort -u | wc -l
+curl -sS "http://10.97.36.52:80/metrics?target=10.95.36.103:9089" \
+  | grep -a '^was_connectionpool_' \
+  | sed -n 's/.*jndiname="\([^"]*\)".*/\1/p' \
+  | sort -u | head -20
 
 - job_name: 'was-exporter'
   scrape_interval: 60s
