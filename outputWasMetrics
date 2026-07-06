@@ -34,18 +34,19 @@ curl -sS "http://10.97.36.52:80/metrics?target=10.95.36.103:9089" \
   | sed -n 's/.*jndiname="\([^"]*\)".*/\1/p' \
   | sort -u | head -20
 
-- job_name: 'was-exporter'
+- job_name: ibm-was-pmi-103
   scrape_interval: 60s
   scrape_timeout: 55s
-  sample_limit: 100000          # 先設上限，避免單次灌爆
-
+  sample_limit: 80000
+  static_configs:
+    - targets: ['10.97.36.52:80']
+  metrics_path: /metrics
+  params:
+    target: ['10.95.36.103:9089']
+  relabel_configs:
+    - source_labels: [__param_target]
+      target_label: instance
   metric_relabel_configs:
-    # 1) 非 connectionpool：全部保留
-    - source_labels: [__name__]
-      regex: 'was_connectionpool_.*'
-      action: drop
-
-    # 2) 只放回「關鍵 pool」的 connectionpool（請改成客戶實際 JNDI）
     - source_labels: [__name__, jndiname]
-      regex: 'was_connectionpool_(free_connections|managed_connections|connectionHandles|size|utilization|inUse_total|wait_total|create_total|close_total);(jdbc/YourDS|jdbc/AnotherDS).*'
+      regex: 'was_(servlet|threadpool|session|ejb|sib|authentication|authorization|transactionmanager|odr|scrape)_.*;|base_.*;|vendor_.*;|process_.*;|system_.*;|jvm_.*;|was_connectionpool_.*;(jdbc/auth|jdbc/B2CDBOC|jdbc/bpmlog)$'
       action: keep
