@@ -1,0 +1,30 @@
+HOST="<was-host>"
+PORT="9080"
+URL="http://${HOST}:${PORT}/metrics"
+OUT="was-metrics-$(date +%Y%m%d-%H%M%S).txt"
+
+curl -sS -o "$OUT" -w "http_code=%{http_code} size=%{size_download} time=%{time_total}s\n" "$URL" \
+  | tee was-metrics-summary.txt
+
+{
+  echo "=== basic ==="
+  echo "file: $OUT"
+  echo "lines: $(wc -l < "$OUT")"
+  echo "bytes: $(wc -c < "$OUT")"
+  echo
+  echo "=== metric names (unique) ==="
+  grep -v '^#' "$OUT" | awk '{print $1}' | sed 's/{.*//' | sort -u | wc -l
+  echo
+  echo "=== top metric prefixes ==="
+  grep -v '^#' "$OUT" | awk '{print $1}' | sed 's/{.*//' | \
+    awk -F_ '{print $1"_"$2}' | sort | uniq -c | sort -nr | head -20
+  echo
+  echo "=== was_* series estimate ==="
+  grep -v '^#' "$OUT" | grep -c '^was_'
+  echo
+  echo "=== top was_* metric names ==="
+  grep -v '^#' "$OUT" | grep '^was_' | awk '{print $1}' | sed 's/{.*//' | \
+    sort | uniq -c | sort -nr | head -20
+} >> was-metrics-summary.txt
+
+cat was-metrics-summary.txt
