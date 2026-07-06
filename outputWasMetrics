@@ -29,18 +29,21 @@ curl -sS -o "$OUT" -w "http_code=%{http_code} size=%{size_download} time=%{time_
 
 cat was-metrics-summary.txt
 
+# 只回報「有幾種 jndiname」，不用貼名稱
+grep '^was_connectionpool_' ... | sed -n 's/.*jndiname="\([^"]*\)".*/\1/p' | sort -u | wc -l
+
 - job_name: 'was-exporter'
   scrape_interval: 60s
   scrape_timeout: 55s
   sample_limit: 100000          # 先設上限，避免單次灌爆
 
   metric_relabel_configs:
-    # 方案 A：只保留必要 pool 類 metrics（約 10 個名字）
+    # 1) 非 connectionpool：全部保留
     - source_labels: [__name__]
-      regex: 'was_connectionpool_(free_connections|managed_connections|connectionHandles|inUse_total|wait_total|create_total|close_total|size|utilization)'
-      action: keep
+      regex: 'was_connectionpool_.*'
+      action: drop
 
-    # 方案 B：若仍太多，暫時 drop 全部 connectionpool，先救穩 Prometheus
-    # - source_labels: [__name__]
-    #   regex: 'was_connectionpool_.*'
-    #   action: drop
+    # 2) 只放回「關鍵 pool」的 connectionpool（請改成客戶實際 JNDI）
+    - source_labels: [__name__, jndiname]
+      regex: 'was_connectionpool_(free_connections|managed_connections|connectionHandles|size|utilization|inUse_total|wait_total|create_total|close_total);(jdbc/YourDS|jdbc/AnotherDS).*'
+      action: keep
