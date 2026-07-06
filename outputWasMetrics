@@ -28,3 +28,19 @@ curl -sS -o "$OUT" -w "http_code=%{http_code} size=%{size_download} time=%{time_
 } >> was-metrics-summary.txt
 
 cat was-metrics-summary.txt
+
+- job_name: 'was-exporter'
+  scrape_interval: 60s
+  scrape_timeout: 55s
+  sample_limit: 100000          # 先設上限，避免單次灌爆
+
+  metric_relabel_configs:
+    # 方案 A：只保留必要 pool 類 metrics（約 10 個名字）
+    - source_labels: [__name__]
+      regex: 'was_connectionpool_(free_connections|managed_connections|connectionHandles|inUse_total|wait_total|create_total|close_total|size|utilization)'
+      action: keep
+
+    # 方案 B：若仍太多，暫時 drop 全部 connectionpool，先救穩 Prometheus
+    # - source_labels: [__name__]
+    #   regex: 'was_connectionpool_.*'
+    #   action: drop
