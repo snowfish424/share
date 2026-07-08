@@ -1,0 +1,211 @@
+groups:
+  - name: jboss_alerts
+    rules:
+
+      # 1. 預警：記憶體即將耗盡 (JVM Heap Exhaustion Risk)
+      - alert: JBossHeapMemoryOOMRisk
+        expr: (base_memory_usedHeap_bytes / base_memory_committedHeap_bytes) * 100 > 95
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JBoss JVM 記憶體即將耗盡，有 OOM 風險"
+          description: "JVM 堆記憶體使用率已超過 95%（目前為 {{ $value | printf \"%.2f\" }}%）並持續 1 分鐘，請儘速檢查記憶體洩漏（Memory Leak）。"
+
+      # 2. 預警：GC 進入死亡漩渦 (GC Overhead Limit Exceeded)
+      # 這是 OOM 發生前最典型的徵兆：CPU 全力在做垃圾回收，但回收不到空間
+      - alert: JBossGCOverheadLimitExceeded
+        expr: sum by (instance) (rate(base_gc_time_total_seconds[5m])) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JVM 垃圾回收時間過長 (GC Overhead Limit)"
+          description: "在過去 5 分鐘內，JVM 花了超過 90% 的 CPU 時間在執行垃圾回收（目前為 {{ $value | printf \"%.2f\" }}%），系統可能即將因 OOM 崩潰。"
+
+      # 3. 災情：服務因 OOM 或其他原因停機 (Service Down / OOM Crash)
+      # 透過 Prometheus 內建的 up 欄位，監控 JBoss 監控端點是否失聯
+      - alert: JBossInstanceDown
+        expr: up{job=~"jboss-eap-exporter|wildfly-exporter"} == 0
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: "JBoss 服務已停止響應 (可能已 OOM Crash)"
+          description: "無法訪問 JBoss 的 /metrics 端點超過 1 分鐘，進程可能已被 OS 的 OOM Killer 強制殺除，或 JVM 已凍結。"
+
+      # 告警 ：GC 時間佔比過高 (GC Overhead High)
+      # 運算邏輯：過去 5 分鐘內，GC 累計耗時佔了總時間的 10% 以上（代表 CPU 都在做 GC，沒空處理業務）
+      - alert: JBossHighGCOverhead
+        expr: sum by (instance) (rate(base_gc_time_total_seconds[5m])) * 100 > 10
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JBoss JVM GC 時間佔比過高 (GC Overhead)"
+          description: "實例 {{ $labels.instance }} 的 JVM 在過去 5 分鐘內，GC 耗時佔了總 CPU 時間的 {{ $value | printf \"%.2f\" }}%（已超過 10%），可能即將發生 OOM。"
+
+      # 告警 ：單次老年代 GC (Full GC/Old Gen GC) 停頓時間過長
+      # 運算邏輯：計算過去 5 分鐘內，G1 Old Generation 平均每次 GC 花費的時間是否超過 2 秒
+      - alert: JBossLongGCPauseTime
+        expr: rate(base_gc_time_total_seconds{name="G1 Old Generation"}[5m]) / rate(base_gc_total{name="G1 Old Generation"}[5m]) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JBoss JVM 老年代 GC 停頓時間過長"
+          description: "實例 {{ $labels.instance }} 的老年代 GC (G1 Old Generation) 平均每次停頓時間達 {{ $value | printf \"%.2f\" }} 秒（已超過 2 秒）。"
+
+      # 告警 ：觸發 G1 Full GC (老年代回收頻次異常)
+      # 運算邏輯：G1 正常的併發週期不會頻繁觸發 Old Gen。如果 5 分鐘內 Old Gen GC 增加了 2 次以上，代表記憶體極度緊張
+      - alert: JBossG1FullGCCountRising
+        expr: increase(base_gc_total{name="G1 Old Generation"}[5m]) > 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JBoss 頻繁觸發 G1 老年代 Full GC"
+          description: "實例 {{ $labels.instance }} 在過去 5 分鐘內觸發了 {{ $value }} 次老年代 GC，JVM 可能正在發生 To-space Exhaustion（空間耗盡）。"
+
+      # 告警 ：G1 老年代回收總耗時突增
+      # 運算邏輯：過去 5 分鐘內，G1 Old Gen 的回收總時間超過 5 秒
+      - alert: JBossG1OldGenDurationHigh
+        expr: increase(base_gc_time_total_seconds{name="G1 Old Generation"}[5m]) > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "G1 老年代 GC 累計停頓時間過長"
+          description: "實例 {{ $labels.instance }} 的 G1 老年代 GC 在 5 分鐘內已累計卡頓 {{ $value | printf \"%.2f\" }} 秒，使用者請求將出現嚴重延遲。"
+
+
+      # 4. DataSource Connection Pool Exhaustion
+      - alert: JBossDataSourcePoolExhausted
+        expr: jboss_datasources_pool_in_use_count{data_source!=""} / jboss_datasources_pool_size{data_source!=""} * 100 > 90
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JBoss Data Source pool usage is >90%"
+          description: "The connection pool for DataSource {{ $labels.data_source }} is at {{ $value }}% capacity."
+
+      # 5. HTTP Request Error Rate (Alert if 5xx errors occur > 5 per minute)
+      - alert: JBossHttp5xxErrorsHigh
+        expr: rate(jboss_undertow_request_count{code=~"5.*"}[1m]) > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate on JBoss"
+          description: "JBoss server {{ $labels.instance }} is experiencing an elevated rate of 5xx HTTP responses."
+
+      # 6. Long Running Transactions
+      - alert: JBossTransactionTimeoutHigh
+        expr: rate(jboss_transaction_timed_out_transactions_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JBoss transactions are timing out"
+          description: "JBoss instance {{ $labels.instance }} has recorded timed-out transactions."
+
+  - name: jboss_http_latency_alerts
+    rules:
+
+      # 全站 HTTP 平均 latency（Undertow Listener，含 JSP / 靜態 / Servlet）
+      - alert: JBossEAPHttpListenerLatencyHigh
+        expr: |
+          sum by (instance) (
+            rate(jboss_undertow_processing_time_total_seconds{job="jboss-eap-exporter",http_listener="default"}[5m])
+          )
+          /
+          sum by (instance) (
+            rate(jboss_undertow_request_count_total{job="jboss-eap-exporter",http_listener="default"}[5m])
+          ) > 2
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JBoss EAP 全站 HTTP 平均延遲過高"
+          description: "實例 {{ $labels.instance }} 過去 5 分鐘全站平均 HTTP latency 為 {{ $value | printf \"%.2f\" }} 秒（> 2s），可能為輪詢風暴、pool 耗盡或 GC 卡頓。"
+
+      - alert: WildFlyHttpListenerLatencyHigh
+        expr: |
+          sum by (instance) (
+            rate(wildfly_undertow_processing_time_total_seconds{job="wildfly-exporter",http_listener="default"}[5m])
+          )
+          /
+          sum by (instance) (
+            rate(wildfly_undertow_request_count_total{job="wildfly-exporter",http_listener="default"}[5m])
+          ) > 2
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WildFly 全站 HTTP 平均延遲過高"
+          description: "實例 {{ $labels.instance }} 過去 5 分鐘全站平均 HTTP latency 為 {{ $value | printf \"%.2f\" }} 秒（> 2s）。"
+
+      # oom-demo 輪詢 servlet（PollingServlet）平均 latency
+      - alert: JBossEAPPollingServletLatencyHigh
+        expr: |
+          sum by (instance) (
+            rate(jboss_undertow_total_request_time_total_seconds{job="jboss-eap-exporter",deployment="oom-demo.war",servlet=~".*PollingServlet"}[5m])
+          )
+          /
+          sum by (instance) (
+            rate(jboss_undertow_request_count_total{job="jboss-eap-exporter",deployment="oom-demo.war",servlet=~".*PollingServlet"}[5m])
+          ) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JBoss oom-demo PollingServlet 延遲過高"
+          description: "實例 {{ $labels.instance }} PollingServlet 平均 latency {{ $value | printf \"%.2f\" }} 秒（> 5s），符合 SELECT ALL 輪詢風暴特徵。"
+
+      - alert: WildFlyPollingServletLatencyHigh
+        expr: |
+          sum by (instance) (
+            rate(wildfly_undertow_total_request_time_total_seconds{job="wildfly-exporter",deployment="oom-demo.war",servlet=~".*PollingServlet"}[5m])
+          )
+          /
+          sum by (instance) (
+            rate(wildfly_undertow_request_count_total{job="wildfly-exporter",deployment="oom-demo.war",servlet=~".*PollingServlet"}[5m])
+          ) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WildFly oom-demo PollingServlet 延遲過高"
+          description: "實例 {{ $labels.instance }} PollingServlet 平均 latency {{ $value | printf \"%.2f\" }} 秒（> 5s）。"
+
+  - name: blackbox_http_latency_alerts
+    rules:
+
+      # Blackbox e2e — 慢查詢 probe（holdMs=3000 的 /poll/query）
+      - alert: BlackboxPollQuerySlowLatencyHigh
+        expr: probe_duration_seconds{job="blackbox-oom-demo-slow"} > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Blackbox 慢查詢 probe 延遲過高"
+          description: "probe {{ $labels.instance }} 耗時 {{ $value | printf \"%.2f\" }} 秒（> 5s），poll-query 端到端變慢。"
+
+      # Blackbox e2e — health（正常應 < 100ms；風暴時 thread pool 被佔滿會變慢）
+      - alert: BlackboxHealthLatencyHigh
+        expr: probe_duration_seconds{job="blackbox-oom-demo",probe_name="health"} > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Blackbox health probe 延遲過高"
+          description: "health probe {{ $labels.instance }} 耗時 {{ $value | printf \"%.2f\" }} 秒（> 2s），全站可能已受慢請求拖累。"
+
+      - alert: BlackboxProbeFailed
+        expr: probe_success{job=~"blackbox-oom-demo.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Blackbox HTTP probe 失敗"
+          description: "probe {{ $labels.instance }} 連續失敗，請檢查服務是否 down 或 pool timeout（503）。"
