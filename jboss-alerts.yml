@@ -209,3 +209,25 @@ groups:
         annotations:
           summary: "Blackbox HTTP probe 失敗"
           description: "probe {{ $labels.instance }} 連續失敗，請檢查服務是否 down 或 pool timeout（503）。"
+
+      - alert: WildFlyDeploymentLatencyHigh
+        expr: |
+          (
+            sum by (instance, deployment) (
+              rate(wildfly_undertow_total_request_time_total_seconds{job="wildfly-exporter",deployment=~".+",servlet=~".+"}[2m])
+            )
+            /
+            sum by (instance, deployment) (
+              rate(wildfly_undertow_request_count_total{job="wildfly-exporter",deployment=~".+",servlet=~".+"}[2m])
+            )
+          ) > 2
+          and
+          sum by (instance, deployment) (
+            increase(wildfly_undertow_request_count_total{job="wildfly-exporter",deployment=~".+",servlet=~".+"}[5m])
+          ) >= 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WildFly deployment {{ $labels.deployment }} HTTP 延遲過高"
+          description: "實例 {{ $labels.instance }} deployment {{ $labels.deployment }} 近 2 分鐘平均 Servlet latency {{ $value | printf \"%.2f\" }} 秒（> 2s）。"
