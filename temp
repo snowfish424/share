@@ -1,0 +1,9 @@
+apiVersion: config.openshift.io/v1
+kind: ImageTagMirrorSet
+metadata:
+  name: rhoai-tag-itms
+spec:
+  imageTagMirrors:
+  - source: registry.redhat.io
+    mirrors:
+    - cwaocpbsno.cwaocp.cwa.gov.tw:8443
