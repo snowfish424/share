@@ -1,6 +1,8 @@
 podman pull quay.io/cwa/rhoai/rhoai-quickstart-workbench:3.4
 quay.io/cwa/rhoai/corrdiff-workbench:latest
 
+https://drive.google.com/drive/folders/1Ox9kfm3_2vQfsaiCZ9vXpDg39Ava4Zao?usp=sharing
+
 spec:
   imageDigestMirrors:
     - mirrors:
