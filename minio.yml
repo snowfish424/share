@@ -1,0 +1,102 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+        accelerator: none
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio
+      containers:
+        - name: minio
+          env:
+            - name: MINIO_ROOT_USER
+              value: admin
+            - name: MINIO_ROOT_PASSWORD
+              value: redhat123
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+            - containerPort: 9001
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          terminationMessagePolicy: File
+          image: 'quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z'
+          args:
+            - server
+            - /data
+            - '--console-address'
+            - ':9001'
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: api
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+    - name: console
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: s3-api
+  namespace: utilities
+spec:
+  path: /
+  to:
+    name: minio
+    weight: 100
+    kind: Service
+  host: ''
+  tls:
+    insecureEdgeTerminationPolicy: ''
+    termination: edge
+  port:
+    targetPort: api
+  alternateBackends: []
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: s3-console
+  namespace: utilities
+spec:
+  path: /
+  to:
+    name: minio
+    weight: 100
+    kind: Service
+  host: ''
+  tls:
+    insecureEdgeTerminationPolicy: None
+    termination: edge
+  port:
+    targetPort: console
+  alternateBackends: []
