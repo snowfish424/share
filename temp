@@ -1,4 +1,5 @@
 podman pull quay.io/cwa/rhoai/rhoai-quickstart-workbench:3.4
+quay.io/cwa/rhoai/corrdiff-workbench:latest
 
 spec:
   imageDigestMirrors:
