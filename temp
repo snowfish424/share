@@ -1,3 +1,13 @@
+NAMESPACE="rhoai-qs-<你的縮寫>"
+MODEL="iris-classifier"
+URL="http://${MODEL}-predictor.${NAMESPACE}.svc.cluster.local:8080"
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+curl -s -X POST "${URL}/v2/models/${MODEL}/infer" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"inputs":[{"name":"input-0","shape":[1,4],"datatype":"FP32","data":[5.1,3.5,1.4,0.2]}]}' | python3 -m json.tool
+
 quay.io/cwa/rhoai/corrdiff-preprocess:latest
 
 cp -f /mnt/corrdiff/workdir/20260707/CorrdiffInput_EC_RAW_20260707.nc.full-backup.nc \
