@@ -13,7 +13,7 @@ nemotron-wb-0
 [root@cwaocpbsno models]# 11
 total 101451418
 -rwxr-xr-x. 1 root root 80365783040 Aug 10 11:39 nemotron-3-super.tar
-[root@cwaocpbsno models]# oc cp nemotron-3-super.tar nemotron-wb-0:/opt/app-root/src/model/nemotron-3-super. tar -c nemotron-wb -- retries =- 1
+[root@cwaocpbsno models]# oc cp nemotron-3-super.tar nemotron-wb-0:/opt/app-root/src/model/nemotron-3-super.tar -c nemotron-wb --retries =- 1
 
 NVIDIA-Nemotron-3-Super-120B
 
