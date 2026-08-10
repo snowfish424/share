@@ -1,3 +1,15 @@
+NVIDIA-Nemotron-3-Super-120B
+
+--max-model-len=262144
+--trust-remote-code
+--tensor-parallel-size=2
+--enable-auto-tool-choice
+--tool-call-parser=qwen3_coder
+
+curl -LsSf https://hf.co/cli/install.sh | bash
+hf download RedHatAI/NVIDIA-Nemotron-3-Super-120B-A12B-FP8 --local-dir ./NVIDIA-Nemotron-3-Super-120B-A12B-FP8
+
+tar -cvf nemotron-3-super.tar NVIDIA-Nemotron-3-Super-120B-A12B-FP8
 [root@cwaocpbsno models]# oc project mc2
 Now using project "mc2" on server "https://api. cwaocp. cwa.gov. tw: 6443".
 [root@cwaocpbsno models]# oc get po
@@ -13,18 +25,7 @@ nemotron-wb-0
 [root@cwaocpbsno models]# 11
 total 101451418
 -rwxr-xr-x. 1 root root 80365783040 Aug 10 11:39 nemotron-3-super.tar
-[root@cwaocpbsno models]# oc cp nemotron-3-super.tar nemotron-wb-0:/opt/app-root/src/model/nemotron-3-super.tar -c nemotron-wb --retries =- 1
-
-NVIDIA-Nemotron-3-Super-120B
-
---max-model-len=262144
---trust-remote-code
---tensor-parallel-size=2
---enable-auto-tool-choice
---tool-call-parser=qwen3_coder
-
-curl -LsSf https://hf.co/cli/install.sh | bash
-hf download RedHatAI/NVIDIA-Nemotron-3-Super-120B-A12B-FP8 --local-dir ./NVIDIA-Nemotron-3-Super-120B-A12B-FP8
+[root@cwaocpbsno models]# oc cp nemotron-3-super.tar nemotron-wb-0:/opt/app-root/src/model/nemotron-3-super.tar -c nemotron-wb --retries=-1
 
 https://hackmd.io/@j3ffk3/rycrvInfle#16-GPU-%E7%9B%A3%E6%8E%A7
 
