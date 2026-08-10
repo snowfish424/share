@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: open-webui-data
+  labels:
+    app.kubernetes.io/name: open-webui
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+  labels:
+    app.kubernetes.io/name: open-webui
+    app.kubernetes.io/instance: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: open-webui
+      app.kubernetes.io/instance: open-webui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: open-webui
+        app.kubernetes.io/instance: open-webui
+    spec:
+      containers:
+        - name: open-webui
+          image: ghcr.io/open-webui/open-webui:main
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: open-webui-config
+          env:
+            - name: DATA_DIR
+              value: "/app/backend/data"
+            # Required secret key for sessions
+            - name: WEBUI_SECRET_KEY
+              value: "t0p-s3cr3t-k3y-ch4ng3-m3-1n-pr0duct10n"
+            # Prevent HuggingFace/Transformers from downloading models
+            - name: HF_HUB_OFFLINE
+              value: "1"
+            - name: TRANSFORMERS_OFFLINE
+              value: "1"
+            - name: HF_DATASETS_OFFLINE
+              value: "1"
+          volumeMounts:
+            - name: data
+              mountPath: /app/backend/data
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: open-webui-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui
+  labels:
+    app.kubernetes.io/name: open-webui
+    app.kubernetes.io/instance: open-webui
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: open-webui
+    app.kubernetes.io/instance: open-webui
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: open-webui
+  labels:
+    app.kubernetes.io/name: open-webui
+    app.kubernetes.io/instance: open-webui
+spec:
+  # host: open-webui.apps.example.com  # Optional: OpenShift auto-generates if omitted
+  to:
+    kind: Service
+    name: open-webui
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
