@@ -1,3 +1,6 @@
+alias python='/usr/bin/python3.12'
+alias python3='/usr/bin/python3.12'
+
 curl -LsSf https://hf.co/cli/install.sh | bash
 hf download RedHatAI/NVIDIA-Nemotron-3-Super-120B-A12B-FP8 --local-dir ./NVIDIA-Nemotron-3-Super-120B-A12B-FP8
 
