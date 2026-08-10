@@ -1,5 +1,5 @@
 curl -LsSf https://hf.co/cli/install.sh | bash
-hf download RedHatAI/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --local-dir ./NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+hf download RedHatAI/NVIDIA-Nemotron-3-Super-120B-A12B-FP8 --local-dir ./NVIDIA-Nemotron-3-Super-120B-A12B-FP8
 
 https://hackmd.io/@j3ffk3/rycrvInfle#16-GPU-%E7%9B%A3%E6%8E%A7
 
