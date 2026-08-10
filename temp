@@ -1,3 +1,13 @@
+https://hackmd.io/@j3ffk3/rycrvInfle#16-GPU-%E7%9B%A3%E6%8E%A7
+
+# Import Dashboard
+curl -LfO https://github.com/NVIDIA/dcgm-exporter/raw/main/grafana/dcgm-exporter-dashboard.json
+oc create configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed --from-file=dcgm-exporter-dashboard.json
+oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/dashboard=true"
+oc label configmap nvidia-dcgm-exporter-dashboard -n openshift-config-managed "console.openshift.io/odc-dashboard=true"
+oc -n openshift-config-managed get cm nvidia-dcgm-exporter-dashboard --show-labels
+
+
 NAMESPACE="rhoai-qs-<你的縮寫>"
 MODEL="iris-classifier"
 URL="http://${MODEL}-predictor.${NAMESPACE}.svc.cluster.local:8080"
