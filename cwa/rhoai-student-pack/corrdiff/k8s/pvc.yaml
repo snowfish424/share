@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: corrdiff-workspace
+  namespace: corrdiff-poc
+  labels:
+    app: corrdiff-poc
+    component: workspace
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ocs-storagecluster-cephfs
+  resources:
+    requests:
+      storage: 100Gi

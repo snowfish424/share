@@ -1,0 +1,78 @@
+ec46day:
+  #----------------------
+  # 資料流路徑
+  # ---------------------
+  pipeline:
+    FcData_prepare:
+      raw_dir: "{SHOME}/dat/EC_S2S/{dtg}/"
+      tmp_dir: "{SHOME}/workdir/{dtg}/"
+      out_dir: "{SHOME}/dtg/EC_S2S_PP/{dtg}/"
+
+    corrdiff:
+      fc_dir: "{SHOME}/dtg/EC_S2S_PP/{dtg}/" 
+      refc_dir: "./"
+      etc_dir: "{SHOME}/etc/"
+      tmp_dir: "{SHOME}/workdir/{dtg}/"
+      out_dir: "{SHOME}/dtg/EC_S2S_AIPP/{dtg}/"
+
+
+  #----------------------
+  # 資料處理
+  #----------------------
+  data:
+    num_leadday: 46
+    variables_shortname: ['tp','2t','msl','10u','10v','ttr','t','u','v','gh']
+    variables_outputname: ['PRECIP','T2M','MSLP','U10M','V10M','OLR','T','U','V','H']
+
+
+  #----------------------
+  # Corrdiff 推論
+  #----------------------
+  # 自動化版本
+  #---------------------
+  opv1:
+    num_case: 1
+    num_leadday: 45
+    method_bc: 'RAW'
+    #----------------------
+    # corrdiff 版本
+    #---------------------
+    corrdiff_v1:
+      version_name: 'Under850_v1'
+      input_var: ["PRECIP","MSLP","U10M","V10M","T2M","T850","U850","V850"]
+      input_area: [30.,20.,110.,130.]  # lat_begin, lat_end, lon_begin, lon_end
+      train_data_set: 
+        set_name: 'ERA_TREAD_19910101_20231231'
+        input_var: ["precipitation","msl","eastward_wind_10m","northward_wind_10m",
+                    "temperature_2m","temperature_850hPa","eastward_wind_850hPa","northward_wind_850hPa"]                  
+        output_var: ["temperature_2m","eastward_wind_10m","northward_wind_10m",
+                     "sea_level_pressure","precipitation_square_root"] 
+
+
+    #----------------------
+    # corrdiff 執行設定
+    #---------------------
+    corrdiff_run:
+      #---------------------------------
+      # 較高機率改這些
+      #---------------------------------
+      num_ensembles: 1
+      img_out_channels: 5
+      inference_mode: 'all'
+      #--------------------------------- 
+      seed_batch_size: 1
+      force_fp16: False
+      use_torch_compile: False
+      sampler_type: "deterministic"
+      hr_mean_conditioning: False
+      img_shape: [208, 208] 
+      patch_shape: [208, 208]
+      sampler_det_solver: 'euler'
+      sampler_det_num_steps: 8
+      sampler_sto_bdypix: 2
+      sampler_sto_olppix: 0
+      sample_res: 'full'
+
+    FcData:
+
+

@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: corrdiff-seed
+  namespace: corrdiff-poc
+  labels:
+    app: corrdiff-poc
+    component: seed
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 7200
+  template:
+    metadata:
+      labels:
+        app: corrdiff-poc
+        component: seed
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-minimal-notebook:3.4
+          command: ["sleep", "28800"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: workspace
+              mountPath: /mnt/corrdiff
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: corrdiff-workspace

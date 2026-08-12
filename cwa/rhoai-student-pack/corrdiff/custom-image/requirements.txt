@@ -1,0 +1,19 @@
+# CorrDiff Workbench — packages baked in (offline-ready at runtime)
+# Align with customer request.json + Modulus inference stack.
+# JupyterLab + Terminal only (no Elyra in this image).
+
+nvidia-modulus==0.9.0
+importlib_metadata
+einops
+netCDF4
+pandas
+scipy
+pyyaml
+jupyterlab
+matplotlib
+ipywidgets
+# JupyterLab Terminal（File → New → Terminal）；RHOAI idle cull 也依賴 terminals API
+notebook
+jupyter-server
+jupyter-server-terminals
+terminado

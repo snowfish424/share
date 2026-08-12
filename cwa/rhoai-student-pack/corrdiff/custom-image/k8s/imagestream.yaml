@@ -1,0 +1,34 @@
+# Optional CLI registration in redhat-ods-applications.
+# Prefer Dashboard: Settings → Workbench images → Import.
+# Dashboard slugifies display name → ImageStream name corrdiff-pytorch-cuda-modulus
+# (not the Quay repo name corrdiff-workbench).
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: corrdiff-pytorch-cuda-modulus
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: "true"
+    opendatahub.io/notebook-image: "true"
+  annotations:
+    opendatahub.io/notebook-image-name: "CorrDiff | PyTorch | CUDA | Modulus"
+    opendatahub.io/notebook-image-desc: "CorrDiff GPU inference Workbench — PyTorch 2.4, CUDA 11.8, NVIDIA Modulus 0.9, Terminal (no Elyra)"
+    opendatahub.io/notebook-image-order: "110"
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: latest
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"PyTorch","version":"2.4"},{"name":"nvidia-modulus","version":"0.9.0"},{"name":"netCDF4","version":"*"}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.11"},{"name":"CUDA","version":"11.8"},{"name":"JupyterLab","version":"4"}]'
+        opendatahub.io/workbench-image-recommended: "true"
+        openshift.io/imported-from: quay.io/cwa/rhoai/corrdiff-workbench:latest
+      from:
+        kind: DockerImage
+        name: quay.io/cwa/rhoai/corrdiff-workbench:latest
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source

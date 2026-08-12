@@ -1,0 +1,74 @@
+# CorrDiff custom Workbench image — importable via OAI Dashboard
+# (Settings → Environment setup → Workbench images → Import)
+#
+# Base matches customer conda lock (PyTorch 2.4 + CUDA 11.8) + NVIDIA Modulus.
+# JupyterLab + Terminal only — no Elyra (use Data Science 3.4 for Pipeline Editor).
+#
+# IMPORTANT: never install into $HOME (/opt/app-root/src). OpenShift mounts the
+# workbench PVC there and hides image contents. Install into /opt/conda.
+#
+# Build:
+#   podman build --platform linux/amd64 -f Containerfile \
+#     -t quay.io/cwa/rhoai/corrdiff-workbench:latest .
+
+ARG BASE_IMAGE=pytorch/pytorch:2.4.0-cuda11.8-cudnn9-runtime
+FROM ${BASE_IMAGE}
+
+LABEL name="corrdiff-workbench" \
+      summary="CorrDiff GPU Workbench (PyTorch 2.4 + CUDA 11.8 + Modulus + Terminal)" \
+      description="Custom RHOAI Workbench for CorrDiff inference notebooks (Jupyter Terminal; no Elyra)" \
+      io.openshift.tags="rhoai,workbench,corrdiff,gpu,modulus" \
+      maintainer="corrdiff-poc"
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PATH=/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    SHOME=/mnt/corrdiff \
+    HOME=/opt/app-root/src \
+    XDG_CACHE_HOME=/tmp/.cache \
+    LOCAL_CACHE=/tmp/.cache/modulus \
+    NB_USER=jovyan \
+    NB_UID=1001
+
+USER 0
+
+# curl: required when this image is used as an Elyra/KFP Runtime Image
+# (bootstrapper.py download). bash: Terminal + scripts that use [[.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libhdf5-dev \
+        libnetcdf-dev \
+        git \
+        bash \
+        curl \
+        ca-certificates \
+        procps \
+        util-linux \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /opt/app-root/src /tmp/.cache/modulus \
+    && chown -R 1001:0 /opt/app-root /tmp/.cache \
+    && chmod -R g+w /opt/app-root /tmp/.cache
+
+COPY requirements.txt /tmp/requirements.txt
+
+# Install as root into /opt/conda so binaries survive PVC mount at $HOME
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir -r /tmp/requirements.txt \
+ && rm -f /tmp/requirements.txt \
+ && chmod -R g+w /opt/conda \
+ && test -x /opt/conda/bin/jupyter \
+ && test -x /bin/bash \
+ && python -c "\
+import torch; import modulus; import jupyterlab; \
+import terminado; import jupyter_server_terminals; \
+from modulus import Module; \
+print('torch', torch.__version__, 'cuda', torch.version.cuda); \
+print('jupyter', __import__('shutil').which('jupyter')); \
+print('terminado OK'); \
+print('corrdiff-workbench OK')"
+
+USER 1001
+WORKDIR /opt/app-root/src
+
+EXPOSE 8888
+
+CMD ["bash", "-lc", "exec /opt/conda/bin/jupyter lab --ip=0.0.0.0 --no-browser --allow-root ${NOTEBOOK_ARGS}"]

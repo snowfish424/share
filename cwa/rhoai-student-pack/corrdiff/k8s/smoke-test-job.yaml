@@ -1,0 +1,91 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: corrdiff-smoke-test
+  namespace: corrdiff-poc
+  labels:
+    app: corrdiff-poc
+    component: smoke-test
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 7200
+  template:
+    metadata:
+      labels:
+        app: corrdiff-poc
+        component: smoke-test
+    spec:
+      restartPolicy: Never
+      serviceAccountName: corrdiff-runner
+      containers:
+        - name: smoke
+          image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:3.4
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              set -x
+              SHOME=/mnt/corrdiff
+              DATE=20260707
+              FC=ec46day
+              OP=opv1
+              CD=corrdiff_v1
+
+              echo "=== CorrDiff PoC Smoke Test ==="
+              echo "SHOME=$SHOME  DATE=$DATE"
+
+              # 1. 檢查目錄結構
+              for d in bin config etc workdir/${DATE} dtg/EC_S2S_PP/${DATE}; do
+                if [ -d "${SHOME}/${d}" ] || [ -f "${SHOME}/${d}" ]; then
+                  echo "[OK] ${SHOME}/${d} exists"
+                else
+                  echo "[WARN] ${SHOME}/${d} missing (may be expected)"
+                fi
+              done
+
+              # 2. 產生 config.yaml
+              mkdir -p "${SHOME}/workdir/${DATE}"
+              python3 "${SHOME}/bin/config_gen.py" \
+                -i "${SHOME}/config/gen_config.yaml" \
+                -o "${SHOME}/workdir/${DATE}/config.yaml" \
+                -v dtg=${DATE} -v SHOME=${SHOME}
+
+              # 3. 驗證 config 內容
+              grep -q "${SHOME}/workdir/${DATE}" "${SHOME}/workdir/${DATE}/config.yaml"
+              echo "[OK] config.yaml generated"
+
+              # 4. 檢查模型權重
+              for f in UNet.Under850_v1.mdlus EDMPrecondSR.Under850_v1.mdlus \
+                       ERA_TREAD_19910101_20231231_normalize_parameter.txt \
+                       wrf_208x208_grid_coords.nc; do
+                test -f "${SHOME}/etc/${f}" && echo "[OK] etc/${f}" || echo "[MISS] etc/${f}"
+              done
+
+              # 5. 檢查 CorrDiff 輸入
+              INPUT="${SHOME}/workdir/${DATE}/CorrdiffInput_EC_RAW_${DATE}.nc"
+              if [ -f "$INPUT" ]; then
+                ls -lh "$INPUT"
+                echo "[OK] CorrdiffInput file present"
+                pip install --quiet netCDF4 2>/dev/null || true
+                python3 -c "import netCDF4 as nc; d=nc.Dataset('$INPUT'); print('[OK] Input NC dims:', dict(d.dimensions))" \
+                  || echo "[WARN] netCDF4 import skipped (offline cluster)"
+              else
+                echo "[MISS] CorrdiffInput not found - inference step will fail"
+                exit 1
+              fi
+
+              echo "=== Smoke test finished ==="
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          volumeMounts:
+            - name: workspace
+              mountPath: /mnt/corrdiff
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: corrdiff-workspace

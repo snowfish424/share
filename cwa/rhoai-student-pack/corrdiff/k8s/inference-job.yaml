@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: corrdiff-inference
+  namespace: corrdiff-poc
+  labels:
+    app: corrdiff-poc
+    component: inference
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 7200
+  template:
+    metadata:
+      labels:
+        app: corrdiff-poc
+        component: inference
+    spec:
+      restartPolicy: Never
+      serviceAccountName: corrdiff-runner
+      containers:
+        - name: inference
+          image: image-registry.openshift-image-registry.svc:5000/corrdiff-poc/corrdiff-inference:latest
+          imagePullPolicy: Always
+          env:
+            - name: HOME
+              value: /tmp
+            - name: LOCAL_CACHE
+              value: /tmp/.cache/modulus
+          args: ["20260707"]
+          resources:
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+              nvidia.com/gpu: "1"
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - name: workspace
+              mountPath: /mnt/corrdiff
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: corrdiff-workspace

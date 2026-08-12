@@ -1,0 +1,40 @@
+# Pipeline server for rhoai-quickstart (dev/test: embedded MariaDB + MinIO).
+# Dashboard expects metadata.name: dspa
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: dspa
+  labels:
+    app: rhoai-quickstart
+    component: pipeline
+spec:
+  dspVersion: v2
+  apiServer:
+    deploy: true
+    enableOauth: true
+    enableSamplePipeline: false
+    caBundleFileMountPath: ""
+    caBundleFileName: ""
+  database:
+    disableHealthCheck: false
+    mariaDB:
+      deploy: true
+      pipelineDBName: mlpipeline
+      pvcSize: 10Gi
+      username: mlpipeline
+      storageClassName: gp3-csi
+  objectStorage:
+    disableHealthCheck: false
+    minio:
+      deploy: true
+      bucket: mlpipeline
+      image: quay.io/minio/minio:RELEASE.2024-10-02T17-50-41Z
+      pvcSize: 10Gi
+      storageClassName: gp3-csi
+  persistenceAgent:
+    deploy: true
+    numWorkers: 2
+  podToPodTLS: true
+  scheduledWorkflow:
+    deploy: true
+    cronScheduleTimezone: UTC
