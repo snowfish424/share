@@ -1,0 +1,21 @@
+2026-08-24 14:56:59,082 ERROR [org.jboss.msc.service.fail] (MSC service thread 1-2) MSC000001: Failed to start service jboss.deployment.unit."einvoice-kis-kiosk-ok.war".STRUCTURE: org.jboss.msc.service.StartException in service jboss.deployment.unit."einvoice-kis-kiosk-ok.war".STRUCTURE: WFLYSRV0153: Failed to process phase STRUCTURE of deployment "einvoice-kis-kiosk-ok.war"
+        at org.jboss.as.server@27.1.6.Final-redhat-00001//org.jboss.as.server.deployment.DeploymentUnitPhaseService.start(DeploymentUnitPhaseService.java:172)
+        at org.jboss.msc@1.5.5.Final-redhat-00001//org.jboss.msc.service.ServiceControllerImpl$StartTask.startService(ServiceControllerImpl.java:1617)
+        at org.jboss.msc@1.5.5.Final-redhat-00001//org.jboss.msc.service.ServiceControllerImpl$StartTask.execute(ServiceControllerImpl.java:1580)
+        at org.jboss.msc@1.5.5.Final-redhat-00001//org.jboss.msc.service.ServiceControllerImpl$ControllerTask.run(ServiceControllerImpl.java:1438)
+        at org.jboss.threads@2.5.0.redhat-00001//org.jboss.threads.ContextClassLoaderSavingRunnable.run(ContextClassLoaderSavingRunnable.java:35)
+        at org.jboss.threads@2.5.0.redhat-00001//org.jboss.threads.EnhancedQueueExecutor.safeRun(EnhancedQueueExecutor.java:2024)
+        at org.jboss.threads@2.5.0.redhat-00001//org.jboss.threads.EnhancedQueueExecutor$ThreadBody.doRunTask(EnhancedQueueExecutor.java:1520)
+        at org.jboss.threads@2.5.0.redhat-00001//org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1411)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.jboss.as.server.deployment.DeploymentUnitProcessingException: WFLYSRV0160: Failed to mount deployment content
+        at org.jboss.as.server@27.1.6.Final-redhat-00001//org.jboss.as.server.deployment.module.DeploymentRootMountProcessor.deploy(DeploymentRootMountProcessor.java:78)
+        at org.jboss.as.server@27.1.6.Final-redhat-00001//org.jboss.as.server.deployment.DeploymentUnitPhaseService.start(DeploymentUnitPhaseService.java:165)
+        ... 8 more
+Caused by: java.io.IOException: VFS000015: Could not create directory for original name 'content' after 10 attempts
+        at org.jboss.vfs@3.3.2.Final-redhat-00001//org.jboss.vfs.TempFileProvider.createTempDir(TempFileProvider.java:142)
+        at org.jboss.vfs@3.3.2.Final-redhat-00001//org.jboss.vfs.VFS.mountZipExpanded(VFS.java:489)
+        at org.jboss.vfs@3.3.2.Final-redhat-00001//org.jboss.vfs.VFS.mountZipExpanded(VFS.java:533)
+        at org.jboss.as.server@27.1.6.Final-redhat-00001//org.jboss.as.server.deployment.DeploymentMountProvider$Factory$ServerDeploymentRepositoryImpl.mountDeploymentContent(DeploymentMountProvider.java:93)
+        at org.jboss.as.server@27.1.6.Final-redhat-00001//org.jboss.as.server.deployment.module.DeploymentRootMountProcessor.deploy(DeploymentRootMountProcessor.java:74)
+        ... 9 more
