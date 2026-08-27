@@ -15,17 +15,17 @@ data:
         - devices: [1]
           mig-enabled: true
           mig-devices:
-            "1g.20gb": 7    
+            "1g.18gb": 7    
         # Device 2：切分成 3 個 2g.40gb 分片
         - devices: [2]
           mig-enabled: true
           mig-devices:
-            "2g.40gb": 3
+            "2g.35gb": 3
         # Device 4：切分成 2 個 3g.70gb 分片
         - devices: [4]
           mig-enabled: true
           mig-devices:
-            "3g.70gb": 2    
+            "3g.71gb": 2    
 
 # 1. 在 nvidia-gpu-operator 命名空間建立 ConfigMap
 oc create configmap custom-mig-config \
@@ -46,37 +46,12 @@ oc patch clusterpolicy cluster-policy --type=merge -p '{
 
 oc label node <h200-node-name> nvidia.com/mig.config=h200-mig-custom --overwrite
 
-oc describe node cwaocpwk05no.cwaocp.cwa.gov.tw |grep -E "nvidia.com/(gpu|mig)"
-                    nvidia.com/gpu-driver-upgrade-state=upgrade-done
-                    nvidia.com/gpu.compute.major=9
-                    nvidia.com/gpu.compute.minor=0
-                    nvidia.com/gpu.count=8
-                    nvidia.com/gpu.deploy.container-toolkit=true
-                    nvidia.com/gpu.deploy.dcgm=true
-                    nvidia.com/gpu.deploy.dcgm-exporter=true
-                    nvidia.com/gpu.deploy.device-plugin=true
-                    nvidia.com/gpu.deploy.driver=true
-                    nvidia.com/gpu.deploy.gpu-feature-discovery=true
-                    nvidia.com/gpu.deploy.mig-manager=true
-                    nvidia.com/gpu.deploy.node-status-exporter=true
-                    nvidia.com/gpu.deploy.nvsm=true
-                    nvidia.com/gpu.deploy.operator-validator=true
-                    nvidia.com/gpu.family=hopper
-                    nvidia.com/gpu.machine=DGXH200
-                    nvidia.com/gpu.memory=143771
-                    nvidia.com/gpu.mode=compute
-                    nvidia.com/gpu.present=true
-                    nvidia.com/gpu.product=NVIDIA-H200
-                    nvidia.com/gpu.replicas=1
-                    nvidia.com/gpu.sharing-strategy=none
-                    nvidia.com/mig.capable=true
-                    nvidia.com/mig.config=h200-mig-custom
-                    nvidia.com/mig.config.state=success
-                    nvidia.com/mig.strategy=mixed
-                    nvidia.com/gpu-driver-upgrade-enabled: true
-  nvidia.com/gpu:     5
-  nvidia.com/gpu:     5
-  nvidia.com/gpu     4                   4
+oc annotate route <你的模型Route名稱> \
+  haproxy.router.openshift.io/tune.bufsize="65536" \
+  haproxy.router.openshift.io/tune.maxrewrite="8192" \
+  haproxy.router.openshift.io/timeout="600s" \
+  --overwrite
+
 
 NVIDIA-Nemotron-3-Super-120B
 
@@ -137,221 +112,3 @@ quay.io/cwa/rhoai/corrdiff-workbench:latest
 
 https://drive.google.com/drive/folders/1Ox9kfm3_2vQfsaiCZ9vXpDg39Ava4Zao?usp=sharing
 
-IS_HOST_DRIVER=false
-NVIDIA_DRIVER_ROOT=/run/nvidia/driver
-DRIVER_ROOT_CTR_PATH=/driver-root
-NVIDIA_DEV_ROOT=/run/nvidia/driver
-DEV_ROOT_CTR_PATH=/driver-root
-WITH_SHUTDOWN_HOST_GPU_CLIENTS=false
-Starting nvidia-mig-manager
-W0827 03:01:21.880944 2014468 client_config.go:682] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
-time="2026-08-27T03:01:21Z" level=info msg="Using custom config: /mig-parted-config/config.yaml"
-time="2026-08-27T03:01:21Z" level=info msg="Waiting for change to 'nvidia.com/mig.config' label"
-time="2026-08-27T03:01:21Z" level=info msg="Updating to MIG config: all-disabled"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.device-plugin=true'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.gpu-feature-discovery=true'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.dcgm-exporter=true'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.dcgm=true'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.nvsm=true'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Current value of 'nvidia.com/mig.config.state=success'\n"
-time="2026-08-27T03:01:21Z" level=info msg="Asserting that the requested configuration is present in the configuration file"
-Selected MIG configuration is valid
-time="2026-08-27T03:01:21Z" level=info msg="Checking if the selected MIG config is currently applied or not"
-Selected MIG configuration currently applied
-time="2026-08-27T03:01:24Z" level=info msg="Selected MIG config is already applied"
-time="2026-08-27T03:01:24Z" level=info msg="Restarting any GPU clients previously shutdown in Kubernetes by reenabling their component-specific nodeSelector labels"
-time="2026-08-27T03:01:24Z" level=info msg="Changing the 'nvidia.com/mig.config.state' node label to 'success'\n"
-time="2026-08-27T03:01:24Z" level=info msg="Successfully updated to MIG config: all-disabled"
-time="2026-08-27T03:01:24Z" level=info msg="Waiting for change to 'nvidia.com/mig.config' label"
-time="2026-08-27T03:07:35Z" level=info msg="Updating to MIG config: h200-mig-custom"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.device-plugin=true'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.gpu-feature-discovery=true'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.dcgm-exporter=true'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.dcgm=true'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/gpu.deploy.nvsm=true'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Current value of 'nvidia.com/mig.config.state=success'\n"
-time="2026-08-27T03:07:35Z" level=info msg="Asserting that the requested configuration is present in the configuration file"
-Selected MIG configuration is valid
-time="2026-08-27T03:07:35Z" level=info msg="Checking if the selected MIG config is currently applied or not"
-time="2026-08-27T03:07:36Z" level=fatal msg="Assertion failure: selected configuration not currently applied"
-time="2026-08-27T03:07:36Z" level=info msg="Checking if the MIG mode setting in the selected config is currently applied or not"
-time="2026-08-27T03:07:36Z" level=info msg="If the state is 'rebooting', we expect this to always return true"
-time="2026-08-27T03:07:37Z" level=fatal msg="Assertion failure: selected configuration not currently applied"
-time="2026-08-27T03:07:37Z" level=info msg="Shutting down all GPU clients in Kubernetes by disabling their component-specific nodeSelector labels"
-time="2026-08-27T03:07:37Z" level=info msg="Waiting for the device-plugin to shutdown"
-time="2026-08-27T03:07:39Z" level=info msg="Waiting for gpu-feature-discovery to shutdown"
-time="2026-08-27T03:07:40Z" level=info msg="Waiting for dcgm-exporter to shutdown"
-time="2026-08-27T03:07:41Z" level=info msg="Waiting for dcgm to shutdown"
-time="2026-08-27T03:07:42Z" level=info msg="Removing the cuda-validator pod"
-time="2026-08-27T03:07:42Z" level=info msg="Removing the plugin-validator pod"
-time="2026-08-27T03:07:42Z" level=info msg="Applying the MIG mode change from the selected config to the node (and double checking it took effect)"
-time="2026-08-27T03:07:42Z" level=info msg="If the -r option was passed, the node will be automatically rebooted if this is not successful"
-time="2026-08-27T03:07:42Z" level=debug msg="Parsing config file..."
-time="2026-08-27T03:07:42Z" level=debug msg="Selecting specific MIG config..."
-time="2026-08-27T03:07:42Z" level=debug msg="Running apply-start hook"
-time="2026-08-27T03:07:42Z" level=debug msg="Checking current MIG mode..."
-time="2026-08-27T03:07:43Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:43Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:43Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:43Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:43Z" level=debug msg="    Current MIG mode: Disabled"
-time="2026-08-27T03:07:43Z" level=debug msg="Running pre-apply-mode hook"
-time="2026-08-27T03:07:43Z" level=debug msg="Applying MIG mode change..."
-time="2026-08-27T03:07:45Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:45Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:45Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:45Z" level=debug msg="    Current MIG mode: Disabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Updating MIG mode: Enabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Mode change pending: false"
-time="2026-08-27T03:07:45Z" level=debug msg="Walking MigConfig for (devices=[2])"
-time="2026-08-27T03:07:45Z" level=debug msg="  GPU 2: 0x233510DE"
-time="2026-08-27T03:07:45Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:45Z" level=debug msg="    Current MIG mode: Disabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Updating MIG mode: Enabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Mode change pending: false"
-time="2026-08-27T03:07:45Z" level=debug msg="Walking MigConfig for (devices=[4])"
-time="2026-08-27T03:07:45Z" level=debug msg="  GPU 4: 0x233510DE"
-time="2026-08-27T03:07:45Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:45Z" level=debug msg="    Current MIG mode: Disabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Updating MIG mode: Enabled"
-time="2026-08-27T03:07:45Z" level=debug msg="    Mode change pending: false"
-MIG configuration applied successfully
-time="2026-08-27T03:07:45Z" level=debug msg="Running apply-exit hook"
-time="2026-08-27T03:07:45Z" level=debug msg="Parsing config file..."
-time="2026-08-27T03:07:45Z" level=debug msg="Selecting specific MIG config..."
-time="2026-08-27T03:07:45Z" level=debug msg="Asserting MIG mode configuration..."
-time="2026-08-27T03:07:46Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:46Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:46Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:46Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:46Z" level=debug msg="    Current MIG mode: Enabled"
-time="2026-08-27T03:07:46Z" level=debug msg="Walking MigConfig for (devices=[2])"
-time="2026-08-27T03:07:46Z" level=debug msg="  GPU 2: 0x233510DE"
-time="2026-08-27T03:07:46Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:46Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:46Z" level=debug msg="    Current MIG mode: Enabled"
-time="2026-08-27T03:07:46Z" level=debug msg="Walking MigConfig for (devices=[4])"
-time="2026-08-27T03:07:46Z" level=debug msg="  GPU 4: 0x233510DE"
-time="2026-08-27T03:07:46Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:46Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:46Z" level=debug msg="    Current MIG mode: Enabled"
-Selected MIG mode settings from configuration currently applied
-time="2026-08-27T03:07:46Z" level=info msg="Applying the selected MIG config to the node"
-time="2026-08-27T03:07:46Z" level=debug msg="Parsing config file..."
-time="2026-08-27T03:07:46Z" level=debug msg="Selecting specific MIG config..."
-time="2026-08-27T03:07:46Z" level=debug msg="Running apply-start hook"
-time="2026-08-27T03:07:46Z" level=debug msg="Checking current MIG mode..."
-time="2026-08-27T03:07:47Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:47Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:47Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:47Z" level=debug msg="    Current MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="Walking MigConfig for (devices=[2])"
-time="2026-08-27T03:07:47Z" level=debug msg="  GPU 2: 0x233510DE"
-time="2026-08-27T03:07:47Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:47Z" level=debug msg="    Current MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="Walking MigConfig for (devices=[4])"
-time="2026-08-27T03:07:47Z" level=debug msg="  GPU 4: 0x233510DE"
-time="2026-08-27T03:07:47Z" level=debug msg="    Asserting MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:47Z" level=debug msg="    Current MIG mode: Enabled"
-time="2026-08-27T03:07:47Z" level=debug msg="Checking current MIG device configuration..."
-time="2026-08-27T03:07:49Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:49Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:49Z" level=debug msg="    Asserting MIG config: map[1g.20gb:7]"
-time="2026-08-27T03:07:49Z" level=debug msg="Walking MigConfig for (devices=[2])"
-time="2026-08-27T03:07:49Z" level=debug msg="  GPU 2: 0x233510DE"
-time="2026-08-27T03:07:49Z" level=debug msg="    Asserting MIG config: map[2g.40gb:3]"
-time="2026-08-27T03:07:49Z" level=debug msg="Walking MigConfig for (devices=[4])"
-time="2026-08-27T03:07:49Z" level=debug msg="  GPU 4: 0x233510DE"
-time="2026-08-27T03:07:49Z" level=debug msg="    Asserting MIG config: map[3g.70gb:2]"
-time="2026-08-27T03:07:49Z" level=debug msg="Running pre-apply-config hook"
-time="2026-08-27T03:07:49Z" level=debug msg="Applying MIG device configuration..."
-time="2026-08-27T03:07:50Z" level=debug msg="Walking MigConfig for (devices=[1])"
-time="2026-08-27T03:07:50Z" level=debug msg="  GPU 1: 0x233510DE"
-time="2026-08-27T03:07:50Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:50Z" level=debug msg="    Updating MIG config: map[1g.20gb:7]"
-time="2026-08-27T03:07:50Z" level=debug msg="Walking MigConfig for (devices=[2])"
-time="2026-08-27T03:07:50Z" level=debug msg="  GPU 2: 0x233510DE"
-time="2026-08-27T03:07:50Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:50Z" level=debug msg="    Updating MIG config: map[2g.40gb:3]"
-time="2026-08-27T03:07:50Z" level=debug msg="Walking MigConfig for (devices=[4])"
-time="2026-08-27T03:07:50Z" level=debug msg="  GPU 4: 0x233510DE"
-time="2026-08-27T03:07:50Z" level=debug msg="    MIG capable: true\n"
-time="2026-08-27T03:07:50Z" level=debug msg="    Updating MIG config: map[3g.70gb:2]"
-MIG configuration applied successfully
-time="2026-08-27T03:07:50Z" level=debug msg="Running apply-exit hook"
-time="2026-08-27T03:07:50Z" level=info msg="Running nvidia-smi"
-Thu Aug 27 03:07:50 2026       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
-+-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA H200                    On  |   00000000:1B:00.0 Off |                    0 |
-| N/A   31C    P0            118W /  700W |  133835MiB / 143771MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   1  NVIDIA H200                    On  |   00000000:43:00.0 Off |                   On |
-| N/A   31C    P0             77W /  700W |       0MiB / 143771MiB |     N/A      Default |
-|                                         |                        |              Enabled |
-+-----------------------------------------+------------------------+----------------------+
-|   2  NVIDIA H200                    On  |   00000000:52:00.0 Off |                   On |
-| N/A   34C    P0             78W /  700W |       0MiB / 143771MiB |     N/A      Default |
-|                                         |                        |              Enabled |
-+-----------------------------------------+------------------------+----------------------+
-|   3  NVIDIA H200                    On  |   00000000:61:00.0 Off |                    0 |
-| N/A   35C    P0            125W /  700W |  133835MiB / 143771MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   4  NVIDIA H200                    On  |   00000000:9D:00.0 Off |                   On |
-| N/A   30C    P0             79W /  700W |       0MiB / 143771MiB |     N/A      Default |
-|                                         |                        |              Enabled |
-+-----------------------------------------+------------------------+----------------------+
-|   5  NVIDIA H200                    On  |   00000000:C3:00.0 Off |                    0 |
-| N/A   28C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   6  NVIDIA H200                    On  |   00000000:D1:00.0 Off |                    0 |
-| N/A   33C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   7  NVIDIA H200                    On  |   00000000:DF:00.0 Off |                    0 |
-| N/A   34C    P0             78W /  700W |       4MiB / 143771MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-
-+-----------------------------------------------------------------------------------------+
-| MIG devices:                                                                            |
-+------------------+----------------------------------+-----------+-----------------------+
-| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
-|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
-|                  |                                  |        ECC|                       |
-|==================+==================================+===========+=======================|
-|  No MIG devices found                                                                   |
-+-----------------------------------------------------------------------------------------+
-
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A         3336893      C   VLLM::Worker_TP0                      13382... |
-|    3   N/A  N/A         3336894      C   VLLM::Worker_TP1                      13382... |
-+-----------------------------------------------------------------------------------------+
-time="2026-08-27T03:07:51Z" level=info msg="Creating NVIDIA control device nodes"
-time="2026-08-27T03:07:51Z" level=info msg="Creating control device nodes at /driver-root"
-time="2026-08-27T03:07:51Z" level=info msg="Skipping: /driver-root/dev/nvidiactl already exists"
-time="2026-08-27T03:07:51Z" level=info msg="Skipping: /driver-root/dev/nvidia-modeset already exists"
-time="2026-08-27T03:07:51Z" level=info msg="Skipping: /driver-root/dev/nvidia-uvm already exists"
-time="2026-08-27T03:07:51Z" level=info msg="Skipping: /driver-root/dev/nvidia-uvm-tools already exists"
-time="2026-08-27T03:07:51Z" level=info msg="Creating management CDI spec"
-time="2026-08-27T03:07:51Z" level=info msg="Creating management CDI spec (simplified implementation)"
-time="2026-08-27T03:07:51Z" level=info msg="Restarting validator pod to re-run all validations"
-time="2026-08-27T03:07:51Z" level=info msg="Restarting all GPU clients previously shutdown in Kubernetes by reenabling their component-specific nodeSelector labels"
-time="2026-08-27T03:07:51Z" level=info msg="Changing the 'nvidia.com/mig.config.state' node label to 'success'\n"
-time="2026-08-27T03:07:51Z" level=info msg="Successfully updated to MIG config: h200-mig-custom"
-time="2026-08-27T03:07:51Z" level=info msg="Waiting for change to 'nvidia.com/mig.config' label"
