@@ -167,3 +167,5 @@ Message: litellm.BadRequestError: Hosted_vllmException - <html><body><h1>400 Bad
   "user_api_key_project_alias": null,
   "vector_store_request_metadata": null
 }
+
+2026-08-27T08:40:21.069918+00:00 cwaocpms03no cwaocpms03no.cwaocp.cwa.gov.tw haproxy[25]: 61.60.103.237:54142 [27/Aug/2026:08:39:51.067] fe_sni~ be_edge_http:mc2:nvidia-nemotron-3-super-120b-f/pod:nvidia-nemotron-3-super-120b-f-predictor-9b87bc4bc-49z85:nvidia-nemotron-3-super-120b-f-predictor:http:10.163.0.163:8080 0/0/8/-1/30002 400 206 - - cHVN 18/9/0/0/0 0/0 "POST /v1/chat/completions HTTP/1.1"
