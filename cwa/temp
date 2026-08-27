@@ -46,6 +46,38 @@ oc patch clusterpolicy cluster-policy --type=merge -p '{
 
 oc label node <h200-node-name> nvidia.com/mig.config=h200-mig-custom --overwrite
 
+oc describe node cwaocpwk05no.cwaocp.cwa.gov.tw |grep -E "nvidia.com/(gpu|mig)"
+                    nvidia.com/gpu-driver-upgrade-state=upgrade-done
+                    nvidia.com/gpu.compute.major=9
+                    nvidia.com/gpu.compute.minor=0
+                    nvidia.com/gpu.count=8
+                    nvidia.com/gpu.deploy.container-toolkit=true
+                    nvidia.com/gpu.deploy.dcgm=true
+                    nvidia.com/gpu.deploy.dcgm-exporter=true
+                    nvidia.com/gpu.deploy.device-plugin=true
+                    nvidia.com/gpu.deploy.driver=true
+                    nvidia.com/gpu.deploy.gpu-feature-discovery=true
+                    nvidia.com/gpu.deploy.mig-manager=true
+                    nvidia.com/gpu.deploy.node-status-exporter=true
+                    nvidia.com/gpu.deploy.nvsm=true
+                    nvidia.com/gpu.deploy.operator-validator=true
+                    nvidia.com/gpu.family=hopper
+                    nvidia.com/gpu.machine=DGXH200
+                    nvidia.com/gpu.memory=143771
+                    nvidia.com/gpu.mode=compute
+                    nvidia.com/gpu.present=true
+                    nvidia.com/gpu.product=NVIDIA-H200
+                    nvidia.com/gpu.replicas=1
+                    nvidia.com/gpu.sharing-strategy=none
+                    nvidia.com/mig.capable=true
+                    nvidia.com/mig.config=h200-mig-custom
+                    nvidia.com/mig.config.state=success
+                    nvidia.com/mig.strategy=mixed
+                    nvidia.com/gpu-driver-upgrade-enabled: true
+  nvidia.com/gpu:     5
+  nvidia.com/gpu:     5
+  nvidia.com/gpu     4                   4
+
 NVIDIA-Nemotron-3-Super-120B
 
 --max-model-len=262144
