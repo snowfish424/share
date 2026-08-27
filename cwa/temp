@@ -120,3 +120,50 @@ quay.io/cwa/rhoai/corrdiff-workbench:latest
 
 https://drive.google.com/drive/folders/1Ox9kfm3_2vQfsaiCZ9vXpDg39Ava4Zao?usp=sharing
 
+Request Failed
+Error Code: 400
+Message: litellm.BadRequestError: Hosted_vllmException - <html><body><h1>400 Bad request</h1> Your browser sent an invalid request. </body></html> . Received Model Group=ocp_nemotron-3-super-120b Available Model Group Fallbacks=None
+
+{
+  "status": "failure",
+  "max_retries": 3,
+  "batch_models": null,
+  "usage_object": null,
+  "user_api_key": "fbc5d44c7b78e6a45ea160752516046a19ef3c756e63362f122a0c7f28a99b15",
+  "cost_breakdown": null,
+  "litellm_call_id": "08c1efc0-84b8-4085-90d2-605b007aaac3",
+  "eval_information": null,
+  "attempted_retries": 0,
+  "error_information": {
+    "traceback": "  File \"/app/.venv/lib/python3.13/site-packages/litellm/proxy/proxy_server.py\", line 8982, in chat_completion\n    result = await base_llm_response_processor.base_process_llm_request(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<16 lines>...\n    )\n    ^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/proxy/common_request_processing.py\", line 1684, in base_process_llm_request\n    responses = await llm_responses\n                ^^^^^^^^^^^^^^^^^^^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/router.py\", line 1979, in acompletion\n    raise e\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/router.py\", line 1955, in acompletion\n    response = await se... (litellm_truncated skipped 1924 chars. Truncation is a DB storage safeguard. Full, untruncated data is logged to logging callbacks (OTEL, Datadog, etc.). To increase the truncation limit, set `MAX_STRING_LENGTH_PROMPT_IN_DB` in your env.) ...       ^^^^^^^^^^^^^^^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/utils.py\", line 1873, in wrapper_async\n    raise e\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/utils.py\", line 1690, in wrapper_async\n    result = await original_function(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/main.py\", line 709, in acompletion\n    raise exception_type(\n          ~~~~~~~~~~~~~~^\n        model=model,\n        ^^^^^^^^^^^^\n    ...<3 lines>...\n        extra_kwargs=kwargs,\n        ^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\", line 2510, in exception_type\n    raise e  # it's already mapped\n    ^^^^^^^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\", line 2276, in exception_type\n    _map_openai_exception(\n    ~~~~~~~~~~~~~~~~~~~~~^\n        model=model,\n        ^^^^^^^^^^^^\n    ...<5 lines>...\n        extra_information=extra_information,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/app/.venv/lib/python3.13/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\", line 394, in _map_openai_exception\n    raise BadRequestError(\n    ...<5 lines>...\n    )\n",
+    "error_code": "400",
+    "error_class": "BadRequestError",
+    "llm_provider": "hosted_vllm",
+    "error_message": "litellm.BadRequestError: Hosted_vllmException - <html><body><h1>400 Bad request</h1>\nYour browser sent an invalid request.\n</body></html>\n. Received Model Group=ocp_nemotron-3-super-120b\nAvailable Model Group Fallbacks=None",
+    "error_budget_limit": null,
+    "error_budget_spend": null,
+    "error_rate_limit_type": null,
+    "error_budget_entity_id": null,
+    "error_budget_entity_type": null,
+    "error_rate_limit_category": null
+  },
+  "applied_guardrails": null,
+  "user_api_key_alias": "c207use",
+  "compression_savings": null,
+  "spend_logs_metadata": null,
+  "user_api_key_org_id": "bd987486-2d25-4055-bddc-a0650c8ac299",
+  "proxy_server_request": null,
+  "requester_ip_address": "172.18.0.1",
+  "user_api_key_team_id": "825cbad5-ae10-4af9-93d7-f73beb474d31",
+  "user_api_key_user_id": "default_user_id",
+  "guardrail_information": null,
+  "model_map_information": null,
+  "mcp_tool_call_metadata": null,
+  "additional_usage_values": {},
+  "cold_storage_object_key": null,
+  "user_api_key_project_id": null,
+  "user_api_key_team_alias": "magic-carpet-2_gcp",
+  "litellm_overhead_time_ms": null,
+  "user_api_key_project_alias": null,
+  "vector_store_request_metadata": null
+}
