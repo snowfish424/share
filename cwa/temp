@@ -25,38 +25,10 @@ data:
         - devices: [4]
           mig-enabled: true
           mig-devices:
-            "3g.70gb": 2
-
-    version: v1
-    mig-configs:
-      h200-custom-heterogeneous:
-        # Device 0, 3, 5, 6, 7：停用 MIG，保持為完整實體 GPU (141GB)
-        - devices: [0, 3, 5, 6, 7]
-          mig-enabled: false
-    
-        # Device 1：切分成 7 個 1g.20gb 分片
-        - devices: [1]
-          mig-enabled: true
-          mig-devices:
-            "1g.20gb": 7
-    
-        # Device 2：切分成 3 個 2g.40gb 分片
-        - devices: [2]
-          mig-enabled: true
-          mig-devices:
-            "2g.40gb": 3
-    
-        # Device 4：切分成 2 個 3g.70gb 分片
-        - devices: [4]
-          mig-enabled: true
-          mig-devices:
-            "3g.70gb": 2
-
-
-    
+            "3g.70gb": 2    
 
 # 1. 在 nvidia-gpu-operator 命名空間建立 ConfigMap
-oc create configmap custom-mig-parted-config \
+oc create configmap custom-mig-config \
   --from-file=config.yaml=custom-mig-config.yaml \
   -n nvidia-gpu-operator
 
@@ -66,13 +38,13 @@ oc patch clusterpolicy cluster-policy --type=merge -p '{
     "mig": {
       "strategy": "mixed",
       "config": {
-        "name": "custom-mig-parted-config"
+        "name": "custom-mig-config"
       }
     }
   }
 }'
 
-oc label node <h200-node-name> nvidia.com/mig.config=h200-custom-heterogeneous --overwrite
+oc label node <h200-node-name> nvidia.com/mig.config=h200-mig-custom --overwrite
 
 NVIDIA-Nemotron-3-Super-120B
 
