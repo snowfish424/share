@@ -11,17 +11,17 @@ data:
         - devices: all
           mig-enabled: false
       h200-mig-custom:
-        # Device 1：切分成 7 個 1g.20gb 分片
+        # Device 1：切分成 7 個 1g.18gb 分片
         - devices: [1]
           mig-enabled: true
           mig-devices:
             "1g.18gb": 7    
-        # Device 2：切分成 3 個 2g.40gb 分片
+        # Device 2：切分成 3 個 2g.35gb 分片
         - devices: [2]
           mig-enabled: true
           mig-devices:
             "2g.35gb": 3
-        # Device 4：切分成 2 個 3g.70gb 分片
+        # Device 4：切分成 2 個 3g.71gb 分片
         - devices: [4]
           mig-enabled: true
           mig-devices:
