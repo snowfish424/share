@@ -1,5 +1,5 @@
 curl -X 'POST' \
-  'https://nvidia-nemotron-3-super-120b-f-mc2.apps.cwaocp.cwa.gov.tw/v1/chat/completions' \
+  'http://nvidia-nemotron-3-super-120b-f-predictor.mc2.svc.cluster.local:8080/v1/chat/completions' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d @testPOST.txt 
