@@ -1,19 +1,11 @@
-{
-  "model": "llama32-3b",
-  "messages": [
-    {
-      "role": "system",
-      "content": "你是一個知識豐富且避免重複回答的助理，回答問題時請一律以繁體中文回答。"
-    },
-    {
-      "role": "user",
-      "content": "你知道 NBA 雷霆隊嗎？"
-    }
-  ],
-  "max_tokens": 256,
-  "temperature": 0.6,
-  "repetition_penalty": 1.2
-}
+curl -X 'POST' \
+  'https://nvidia-nemotron-3-super-120b-f-mc2.apps.cwaocp.cwa.gov.tw/v1/chat/completions' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d @testPOST.txt 
+<html><body><h1>400 Bad request</h1>
+Your browser sent an invalid request.
+</body></html>
 
 
 apiVersion: v1
