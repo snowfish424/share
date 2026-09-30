@@ -1,19 +1,104 @@
-    - mappingMethod: claim
-      name: adfs
-      openID:
-        claims:
-          email:
-            - upn
-          name:
-            - unique_name
-          preferredUsername:
-            - unique_name
-        clientID: 23bab6ee-dc47-4ec5-9fc0-6cb51ab72ecc
-        clientSecret:
-          name: openid-client-secret-8dlbf
-        extraScopes: []
-        issuer: 'https://gc2.cwa.gov.tw/adfs/ls'
-      type: OpenID
+openssl s_client \
+> -connect gc2.cwa.gov.tw:443 \
+> -servername gc2.cwa.gov.tw \
+> -showcerts
+Connecting to 61.56.14.4
+CONNECTED(00000003)
+depth=0 C=TW, L=臺灣, O=政府機關-行政院-交通部-中央氣象署, CN=gc2.cwa.gov.tw
+verify error:num=20:unable to get local issuer certificate
+verify return:1
+depth=0 C=TW, L=臺灣, O=政府機關-行政院-交通部-中央氣象署, CN=gc2.cwa.gov.tw
+verify error:num=21:unable to verify the first certificate
+verify return:1
+depth=0 C=TW, L=臺灣, O=政府機關-行政院-交通部-中央氣象署, CN=gc2.cwa.gov.tw
+verify return:1
+---
+Certificate chain
+ 0 s:C=TW, L=臺灣, O=政府機關-行政院-交通部-中央氣象署, CN=gc2.cwa.gov.tw
+   i:C=TW, O=TAIWAN-CA, OU=SSL Sub-CA, CN=TWCA SSL Certification Authority
+   a:PKEY: rsaEncryption, 4096 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Aug 21 04:26:38 2026 GMT; NotAfter: Mar  7 15:59:59 2027 GMT
+-----BEGIN CERTIFICATE-----
+MIIIizCCBnOgAwIBAgIQR+oAAAAJYMU7Z592NlonLjANBgkqhkiG9w0BAQsFADBh
+MQswCQYDVQQGEwJUVzESMBAGA1UEChMJVEFJV0FOLUNBMRMwEQYDVQQLEwpTU0wg
+U3ViLUNBMSkwJwYDVQQDEyBUV0NBIFNTTCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
+eTAeFw0yNjA4MjEwNDI2MzhaFw0yNzAzMDcxNTU5NTlaMHIxCzAJBgNVBAYTAlRX
+MQ8wDQYDVQQHDAboh7rngaMxOTA3BgNVBAoMMOaUv+W6nOapn+mXnC3ooYzmlL/p
+maIt5Lqk6YCa6YOoLeS4reWkruawo+ixoee9sjEXMBUGA1UEAxMOZ2MyLmN3YS5n
+b3YudHcwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCow/Tq25qF3ErE
+qk0QHhHlWwEBQM8giVdW+ZUUo4LiIqwqKTsrUkwGUu9/2DJpifl61Xd+LdfffJBW
+Bwb8MKSIZjm5MR15xNHlFrSN+FcV3lwsKQrapUnCgzErDLrNbSnY90uhU8/NeiO7
+WATVT4CK/il9uWRFeeCxjKT0jLaUchqYfZgp9L4491k6xLFPnt7kCIB25q767xhb
+poIxo6ugQpcDhiKw1UBubDggmSZFj2SByDTNwqTqQ6rMVg5A6hVgleNOinyhwPSa
+VJ25X9UZTE3/56XRWBbeZmrgdWmcqgZ0s+NYl2YkzSts6dNgBrBDU7F4DFrhcthJ
+LpUCnyuEjGXLIRiRrlmAAsbumWu5D8W+NvnaCDhcwOsf2zRDT7x/fEEaaWihJJiR
+rIY11yQ+mFM/VFO2IcUuynPMo28+WtB1SlsCBoxQJ6OmoA9m53pPNsW4CftT62ez
+nxr85HdDWh3XrYIA4myPqWxoBORIkuITrLcKu5aic3PZQ44VFjsD24y/uMntdMx8
+Kz0gCEeVt/wVjvdd9Z9SonjzHIbmdjQxxxnPhPLc29MqyXhUAUX3NgOp64Vfm14k
+3lwUPXWUfXp/xej40QsoWtiCGLAKVSyIOeIeCZt4IcjvJtP5qSR3oayEzJ0IussL
+nG0DPaB3yLyzowdiBBQ1Yn1QhYf4iQIDAQABo4IDLDCCAygwHwYDVR0jBBgwFoAU
+8ijU+dQcfhprFoLl75Mpae3KFSAwHQYDVR0OBBYEFFfzj1PzKkafMeP/OKme8Ck4
+jyP+MEoGA1UdHwRDMEEwP6A9oDuGOWh0dHA6Ly9zc2xzZXJ2ZXIudHdjYS5jb20u
+dHcvc3Nsc2VydmVyL0N5YmVyX1NTTF8yMDIzLmNybDAZBgNVHREEEjAQgg5nYzIu
+Y3dhLmdvdi50dzB/BggrBgEFBQcBAQRzMHEwQgYIKwYBBQUHMAKGNmh0dHA6Ly9z
+c2xzZXJ2ZXIudHdjYS5jb20udHcvY2FjZXJ0L0N5YmVyX1NTTF8yMDIzLmNydDAr
+BggrBgEFBQcwAYYfaHR0cDovL3R3Y2Fzc2xvY3NwLnR3Y2EuY29tLnR3LzBKBgNV
+HSAEQzBBMDUGCysGAQQBgr8lAQEVMCYwJAYIKwYBBQUHAgEWGGh0dHBzOi8vd3d3
+LnR3Y2EuY29tLnR3LzAIBgZngQwBAgIwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8E
+BAMCBaAwEwYDVR0lBAwwCgYIKwYBBQUHAwEwggF9BgorBgEEAdZ5AgQCBIIBbQSC
+AWkBZwB2AByfaCzp+vBFaVD4G5aKh93bMhDYTObIsuOCUkrEz1mfAAABoCKSLlMA
+AAQDAEcwRQIhAMyxKjTXsHtDzHOAsv8gKnMG+B5wEaiYnliwZ1kdslrlAiBt5w2M
+4qEl8EUdEKO/s6RLczbAws1EWWWiOPK+eng3VQB2AGBMmq96f3dfAdQG/JINyJnr
+Cxx9+MlSG/r6F3c7l4vJAAABoCKSLwcAAAQDAEcwRQIgMtnwFsFk+uLwla6llqm2
+kBzufDrXFQ2etHeRL1GLKwYCIQDXNPYKpdx6MQMhHUflFdCfMKqu5WeJPaLA6wvM
+n0/7PgB1AExj3JjlnB2riPYeij3ero+rRKM3e1+blMP7oZz8wb4mAAABoCKSLZ8A
+AAQDAEYwRAIgTbd4UakDssf0rGtlMXqtVLijWCTjaUxdFDikoOQ/0BcCIHWnIyGc
+LsbdXjGPIAxXgx4ZrwktDNNRdTbKCuVcmxVcMA0GCSqGSIb3DQEBCwUAA4ICAQAY
+r1Qqcbt5yMDuvh8FdB9NaO7gZNH9pc2I7Sc21W+HCNwvaJk7XxrhVjEY/rNBVYlI
+Flx3DEEQM1zNAAoeWO0xwxa164uo1hWSuOv1t1D5WBZAnTU57UFhTerwIapqj3ua
+xlVgikQemsgzX6jInQrLNYkWzhBsx/1C56cU2nUJHlksYLptZMaXjPy7slOg7z4Z
+qlWL1uADAOhL3G0VByKi0B1P9Zewb5/PQ6t1G6mjWP0O2hWkRNfaecGHIvk604t/
+nh7qEjQT8XKCwCDV1sRY0hMf691o9476Yzn3gEpHgXcsRULqy4xGPtLNBCk+xKVk
+0Sb3tvu3xwmC0AOzexXzEScJWsFPmWfhkv9rQ+7We3fGdG9/z+zecrdIk84K59sY
+Bp3TGQpQmUjgLDlA1E7V5UfkXRkXUsCcn1yCdOkotOCqvhrDTabJ7eXJzKmy/ufT
+XEiiUN1U0R6OAnI9r/LE0i/pa7z0GFKL+Xua22TENt+YUV0YIYUKVxnkfYe7DGGH
+ea9rg9H+kABZC48tAMWpLcvKBgxQj7/beZJkXo//c+xyiq2pA1yvj1AIaLeuYyq/
+G4A4Y5rwAqtGEhG79vo3W2OxUtNoo6ps6o7ImJtqXfR919SUt2H6hVcar1d8thsw
+B0Qs2AzLa7bBBo9oGvhFKQAhDqzlojdgYU1ykCFYHQ==
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=C=TW, L=臺灣, O=政府機關-行政院-交通部-中央氣象署, CN=gc2.cwa.gov.tw
+issuer=C=TW, O=TAIWAN-CA, OU=SSL Sub-CA, CN=TWCA SSL Certification Authority
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA
+Server Temp Key: ECDH, prime256v1, 256 bits
+---
+SSL handshake has read 2960 bytes and written 451 bytes
+Verification error: unable to verify the first certificate
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Server public key is 4096 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: 992533F7DC98168B614CC48C25409F7258810C70F308F8EE5429F744B590AF42
+    Session-ID-ctx:
+    Master-Key: 56DCF3C0289135F46EA8C84768A07A25F13FA8F620F3E67C13BC9EFD4BF6DB481110EE372F01ECDB83011EA14ABFE285
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    Start Time: 1790748565
+    Timeout   : 7200 (sec)
+    Verify return code: 21 (unable to verify the first certificate)
+    Extended master secret: yes
+---
 
 curl -X 'POST' \
   'http://nvidia-nemotron-3-super-120b-f-predictor.mc2.svc.cluster.local:8080/v1/chat/completions' \
