@@ -1,4 +1,19 @@
-OAuthServerConfigObservationDegraded: failed to apply IDP adfs config: tls: failed to verify certificate: x509: certificate signed by unknown authority
+    - mappingMethod: claim
+      name: adfs
+      openID:
+        claims:
+          email:
+            - upn
+          name:
+            - unique_name
+          preferredUsername:
+            - unique_name
+        clientID: 23bab6ee-dc47-4ec5-9fc0-6cb51ab72ecc
+        clientSecret:
+          name: openid-client-secret-8dlbf
+        extraScopes: []
+        issuer: 'https://gc2.cwa.gov.tw/adfs/ls'
+      type: OpenID
 
 curl -X 'POST' \
   'http://nvidia-nemotron-3-super-120b-f-predictor.mc2.svc.cluster.local:8080/v1/chat/completions' \
