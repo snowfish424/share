@@ -1,3 +1,6 @@
+23babбee-dc47-4ec5-9fcÛ-6cb51ab72еcc
+-D-1.jhwHy9e43AfNkzpSaPvf5711-1TnOUsG00f1
+
 curl -X 'POST' \
   'http://nvidia-nemotron-3-super-120b-f-predictor.mc2.svc.cluster.local:8080/v1/chat/completions' \
   -H 'accept: application/json' \
