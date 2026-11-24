@@ -1,0 +1,129 @@
+# 中央氣象署 Podman / OCP 實作指令
+# Bash / Linux。每個區段依序執行，先讀學員講義，勿整檔直接執行。
+# 所有 oc 操作均限講師分配的個人練習 Project。
+
+# 0. 本機練習；這一段不需要 OCP 或 Registry。
+bash scripts/preflight.sh --local
+export BASE_IMAGE=registry.access.redhat.com/ubi9/python-312:latest
+# 進入 Lab 3-4 前才需要以下環境設定與登入。
+# OCP 不可用時，先使用 podman-local-only.txt 完成本機練習。
+cp workshop.env.example workshop.env
+# 編輯 workshop.env，填入實際環境，不填入密碼。
+source workshop.env
+# oc login 使用 Console 提供的實際伺服器與登入方式。
+# oc whoami
+# oc project "$PROJECT"
+# bash scripts/preflight.sh --ocp
+
+# 1. 建置
+podman build \
+  --build-arg BASE_IMAGE="$BASE_IMAGE" \
+  --build-arg APP_VERSION=1.0 \
+  -t localhost/cwa-weather:1.0 app
+podman image inspect localhost/cwa-weather:1.0 \
+  --format '{{.Os}}/{{.Architecture}}'
+podman images
+
+# 2. 本機執行、觀察、移除
+podman run -d --name cwa-local \
+  -p 127.0.0.1:8080:8080 \
+  -e STATION_NAME=Taipei-DEMO \
+  localhost/cwa-weather:1.0
+curl -fsS http://127.0.0.1:8080/observations
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS http://127.0.0.1:8080/readyz
+podman logs cwa-local
+podman exec cwa-local id
+podman exec cwa-local cat /opt/app/data/startup.txt
+podman stop cwa-local
+podman rm cwa-local
+
+# 2b. 模擬另一個非 root UID，僅測試映像的目錄權限
+# 12345 必須位於練習主機 rootless 可映射的 UID 範圍。
+podman run --rm --user 12345:0 \
+  --entrypoint sh localhost/cwa-weather:1.0 \
+  -c 'id; touch /opt/app/data/check'
+
+# 3. 推送至 Registry
+# 若要先練習儲存，執行 storage-lab.txt 的 A-C，之後再繼續本段。
+mkdir -p .secrets
+chmod 700 .secrets
+podman login --authfile .secrets/registry-auth.json "$REGISTRY"
+chmod 600 .secrets/registry-auth.json
+podman tag localhost/cwa-weather:1.0 "$IMAGE_V1"
+podman push --authfile .secrets/registry-auth.json "$IMAGE_V1"
+
+# 4. OCP 拉取認證：本課使用個人隔離 Repository 的短期練習帳號
+oc project "$PROJECT"
+bash scripts/preflight.sh --ocp
+oc apply -f k8s/serviceaccount.yaml
+oc create secret generic registry-pull \
+  --type=kubernetes.io/dockerconfigjson \
+  --from-file=.dockerconfigjson=.secrets/registry-auth.json \
+  --dry-run=client -o yaml | oc apply -f -
+oc label secret registry-pull workshop=cwa-podman --overwrite
+oc secrets link cwa-app registry-pull --for=pull
+
+# 5. 產生、檢查並套用部署
+# 預設建立 1Gi PVC，使用叢集預設 StorageClass 與 Recreate 更新。
+# 暫存對照可加 --storage emptydir；完整資料遷移見 storage-lab.txt。
+python3 scripts/render.py --image "$IMAGE_V1"
+oc apply --dry-run=server -f .generated/app.yaml
+oc apply -f .generated/app.yaml
+oc rollout status deployment/cwa-weather --timeout=240s
+oc get pods -l app=cwa-weather
+oc get service,route -l workshop=cwa-podman
+
+# 6. 存取服務
+ROUTE_HOST=$(oc get route cwa-weather -o jsonpath='{.spec.host}')
+curl -fsS "https://$ROUTE_HOST/observations"
+curl -fsS "https://$ROUTE_HOST/healthz"
+curl -fsS "https://$ROUTE_HOST/readyz"
+oc exec deployment/cwa-weather -- id
+oc exec deployment/cwa-weather -- cat /opt/app/data/startup.txt
+
+# 7. 更新 ConfigMap，再重啟 Pod 讀取環境變數
+oc patch configmap cwa-weather-config --type=merge \
+  -p '{"data":{"STATION_NAME":"Kaohsiung-DEMO"}}'
+oc rollout restart deployment/cwa-weather
+oc rollout status deployment/cwa-weather --timeout=180s
+curl -fsS "https://$ROUTE_HOST/observations"
+
+# 8. 建置、推送並釋出 2.0
+podman build --no-cache --build-arg BASE_IMAGE="$BASE_IMAGE" \
+  --build-arg APP_VERSION=2.0 -t "$IMAGE_V2" app
+podman push --authfile .secrets/registry-auth.json "$IMAGE_V2"
+oc set image deployment/cwa-weather api="$IMAGE_V2"
+oc rollout status deployment/cwa-weather --timeout=180s
+curl -fsS "https://$ROUTE_HOST/observations"
+
+# 9. 緊接釋出後回復上一 revision
+oc rollout history deployment/cwa-weather
+oc rollout undo deployment/cwa-weather
+oc rollout status deployment/cwa-weather --timeout=180s
+curl -fsS "https://$ROUTE_HOST/observations"
+# 如有額外操作，先確認 revision，再使用 --to-revision=N。
+# Deployment undo 不回復 ConfigMap 與持久資料。
+
+# 10. 排錯查詢。POD_NAME 需改成 oc get pods 顯示的真實名稱。
+oc get pods -l app=cwa-weather
+oc get events --sort-by=.lastTimestamp
+# oc describe pod POD_NAME
+# oc logs POD_NAME -c api
+# oc logs POD_NAME -c api --previous
+oc get service cwa-weather -o yaml
+oc get endpointslices -l kubernetes.io/service-name=cwa-weather
+oc describe route cwa-weather
+# 另一個 Terminal 可執行：
+# oc port-forward service/cwa-weather 18080:80
+# 原 Terminal 測試：curl -fsS http://127.0.0.1:18080/observations
+
+# 11. 課後清理：先確認 Project，僅刪除本課標籤資源。
+# 此清理清單刻意保留 PVC；刪除 PVC 前必須另外確認備份與回收政策。
+# oc project
+# oc get deployment,service,route,configmap,serviceaccount,secret \
+#   -l workshop=cwa-podman
+# oc delete deployment,service,route,configmap,serviceaccount,secret \
+#   -l workshop=cwa-podman
+# podman logout --authfile .secrets/registry-auth.json "$REGISTRY"
+# 刪除本課 .secrets/ 認證檔，並按講師規劃清除 Registry 的課程 Tags。

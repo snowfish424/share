@@ -1,0 +1,28 @@
+ARG BASE_IMAGE=registry.access.redhat.com/ubi9/python-312:latest
+FROM ${BASE_IMAGE}
+
+USER 0
+WORKDIR /opt/app
+
+# Install dependencies before copying application source.
+COPY requirements.txt /opt/app/requirements.txt
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/python -m pip install --no-cache-dir \
+      -r /opt/app/requirements.txt
+ENV PATH="/opt/venv/bin:${PATH}"
+
+COPY app.py /opt/app/app.py
+RUN mkdir -p /opt/app/data && \
+    chgrp -R 0 /opt/app && chmod -R g=u /opt/app
+
+ARG APP_VERSION=1.0
+ENV APP_VERSION=${APP_VERSION} \
+    PORT=8080 \
+    DATA_DIR=/opt/app/data \
+    HOME=/tmp \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+EXPOSE 8080
+USER 1001
+ENTRYPOINT ["python3", "-u", "/opt/app/app.py"]
+CMD []

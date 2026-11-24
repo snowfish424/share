@@ -1,0 +1,2 @@
+# Python package installation exercise. Pin the direct dependency for this demo.
+requests==2.34.2

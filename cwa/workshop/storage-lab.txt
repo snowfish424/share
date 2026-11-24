@@ -1,0 +1,88 @@
+# 儲存實作：Podman named volume / bind mount / OCP PVC 與 PV
+# Linux / Bash，工作目錄 workshop/。逐段操作，勿整檔直接執行。
+# 前提：已建置 localhost/cwa-weather:1.0，已移除佔用 8080 的本課舊容器。
+
+# A. Podman named volume 保存輸出；bind mount 提供唯讀輸入
+podman volume create cwa-weather-data
+podman run -d --name cwa-storage \
+  -p 127.0.0.1:8080:8080 \
+  -v cwa-weather-data:/opt/app/data \
+  -v "$PWD/storage-seed:/seed:ro,Z" \
+  localhost/cwa-weather:1.0
+# Linux SELinux 使用 :Z 私有標籤；多容器共用才考慮 :z。
+# macOS/Windows 的 bind source 由 Linux VM 解析，須使用已共享的路徑。
+# 本機 macOS 演練使用唯讀共享路徑 :ro；課堂主路徑為 Linux。
+podman exec cwa-storage cp /seed/observations-demo.json /opt/app/data/
+podman exec cwa-storage sh -c \
+  'printf "created-by-podman\n" > /opt/app/data/lesson.txt'
+podman exec cwa-storage cat /opt/app/data/lesson.txt
+podman volume inspect cwa-weather-data
+
+# B. 刪除容器，再掛同一個 volume，確認資料仍存在
+podman stop cwa-storage
+podman rm cwa-storage
+podman run -d --name cwa-storage \
+  -p 127.0.0.1:8080:8080 \
+  -v cwa-weather-data:/opt/app/data \
+  localhost/cwa-weather:1.0
+podman exec cwa-storage cat /opt/app/data/lesson.txt
+podman exec cwa-storage cat /opt/app/data/observations-demo.json
+# 注意 startup.txt 每次啟動都覆寫，不用它判斷持久化是否成功。
+
+# C. 停止資料寫入，再匯出 volume 內容；不是 podman save 映像
+podman stop cwa-storage
+podman rm cwa-storage
+podman volume export cwa-weather-data --output podman-data.tar
+sha256sum storage-seed/observations-demo.json
+sha256sum podman-data.tar
+# macOS 使用 shasum -a 256。不要刪除 named volume。
+
+# D. OCP 用 PVC 申請儲存，StorageClass 動態供應 PV
+# 本節沿用既有 workshop.env。使用內建 Registry 時，IMAGE_V1 要填叢集內位址。
+oc project "$PROJECT"
+# 講師先確認 StorageClass；有權限者可執行 oc get storageclass。
+python3 scripts/render.py --image "$IMAGE_V1"
+# 預設：1Gi / ReadWriteOnce / 使用預設 StorageClass / Recreate。
+# 指定類別：加上 --storage-class 講師提供的名稱，例如 gp3-csi。
+oc apply --dry-run=server -f .generated/app.yaml
+oc apply -f .generated/app.yaml
+oc rollout status deployment/cwa-weather --timeout=240s
+oc get pvc cwa-weather-data
+# WaitForFirstConsumer 的 PVC 在沒有消費 Pod 前可能 Pending，應先建立 Pod。
+# 學員不需要手動建立 PV，也不需要 cluster-admin。
+
+# E. 將 Podman 資料搬到 PVC。先停應用，再用維護 Pod 匯入。
+oc scale deployment/cwa-weather --replicas=0
+oc wait --for=delete pod -l app=cwa-weather --timeout=180s
+python3 scripts/render.py --image "$IMAGE_V1" \
+  --maintenance --output .generated/data-migrate.yaml
+oc apply -f .generated/data-migrate.yaml
+oc wait --for=condition=Ready pod/cwa-data-migrate --timeout=240s
+oc exec -i cwa-data-migrate -- \
+  tar --no-same-owner --no-same-permissions -xf - -C /opt/app/data \
+  < podman-data.tar
+oc exec cwa-data-migrate -- cat /opt/app/data/lesson.txt
+oc exec cwa-data-migrate -- sha256sum /opt/app/data/observations-demo.json
+# 比對上方原始 JSON 的 SHA-256。不要使用 -t 傳送 tar 位元流。
+oc delete pod cwa-data-migrate --wait=true
+oc scale deployment/cwa-weather --replicas=1
+oc rollout status deployment/cwa-weather --timeout=240s
+oc exec deployment/cwa-weather -- cat /opt/app/data/lesson.txt
+
+# F. 刪除本課 Pod，由 Deployment 重建，再確認資料還在
+oc get pods -l app=cwa-weather
+# 把 POD_NAME 替換為上一步的本課 Pod 名稱：
+# oc delete pod POD_NAME
+oc get pods -l app=cwa-weather -w
+# 新 Pod Ready 後 Ctrl+C，再查資料與 PVC。
+oc exec deployment/cwa-weather -- cat /opt/app/data/lesson.txt
+oc get pvc cwa-weather-data
+
+# G. 版本更新／undo 使用同一個 PVC，不能當作資料回復。
+# 本課採單副本 RWO + Recreate，更新可能短暫停機。
+# RWO 是單節點讀寫，不等同只允許一個 Pod。
+# 若要跨節點多副本共用，須依後端能力另設計 RWX 或應用層儲存。
+
+# 課後預設保留 cwa-weather-data（Podman volume 與 OCP PVC），不自動刪資料。
+# 真正刪除 PVC 前，先由講師確認 PV reclaimPolicy 及備份。
+# Delete 類型可能連帶刪除後端磁碟；podman volume rm 則刪本機 volume 資料。
