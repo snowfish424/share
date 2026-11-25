@@ -88,3 +88,38 @@ linux/amd64
 [com073@cwaocpbsno 20261126]$ podman run --rm --platform "linux/$ARCH" --read-only \
 --entrypoint python3 localhost/cwa-weather:1.0 -m pip check
 No broken requirements found.
+
+# 建立對應網域的憑證目錄（注意：若有指定 port 443，目錄名稱建議同時準備或對應）
+mkdir -p ~/.config/containers/certs.d/rdc71.cwa.gov.tw
+mkdir -p ~/.config/containers/certs.d/rdc71.cwa.gov.tw:443
+
+
+# 抓出憑證並放入
+openssl s_client -showcerts -connect rdc71.cwa.gov.tw:443 </dev/null 2>/dev/null | \
+  openssl x509 -outform PEM > ~/.config/containers/certs.d/rdc71.cwa.gov.tw/ca.crt
+
+
+cp ~/.config/containers/certs.d/rdc71.cwa.gov.tw/ca.crt \
+   ~/.config/containers/certs.d/rdc71.cwa.gov.tw:443/ca.crt
+
+podman login -u ${ACCOUNT} -p ${PASSWD} rdc71.cwa.gov.tw
+Login Succeeded!
+
+[com073@cwaocpbsno 20261126]$ podman images
+REPOSITORY                                  TAG         IMAGE ID      CREATED         SIZE
+rdc71.cwa.gov.tw/public_hub/cwa-weather     1.0         62d75c20657b  17 minutes ago  1.11 GB
+localhost/cwa-weather                       1.0         62d75c20657b  17 minutes ago  1.11 GB
+registry.access.redhat.com/ubi9/python-312  latest      f27a718b6989  19 hours ago    1.09 GB
+
+[com073@cwaocpbsno 20261126]$ podman push 62d75c20657b rdc71.cwa.gov.tw/public_hub/cwa-weather:1.0
+Getting image source signatures
+Copying blob 1a740ce03c79 done   |
+Copying blob 51b8c4e87488 done   |
+Copying blob 8d0f21fd35b5 done   |
+Copying blob 756e6040f879 done   |
+Copying blob 254a869073b7 done   |
+Copying blob 4c0ef432d98d done   |
+Copying blob a4fc625527dd done   |
+Copying blob 820d3535a360 done   |
+Copying config 62d75c2065 done   |
+Writing manifest to image destination
