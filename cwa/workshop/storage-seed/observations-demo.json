@@ -1,6 +1,0 @@
-{
-  "sample_data": true,
-  "station": "Taipei-DEMO",
-  "temperature_c": 26.5,
-  "purpose": "Podman volume to OpenShift PVC migration exercise"
-}
